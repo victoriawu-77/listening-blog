@@ -6,15 +6,7 @@
   <title>Victoria’s Listening Log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet" />
-  <script>
-    /* Default open. Collapse only when a saved preference says so. */
-    try {
-      if (localStorage.getItem("victoria-listening-sidebar") === "collapsed") {
-        document.documentElement.classList.add("side-collapsed");
-      }
-    } catch (e) {}
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
   <style>
     :root {
       /* Particle cream ground + charcoal type + distinct band accents */
@@ -37,14 +29,12 @@
       --day: var(--coral);
       --night: var(--blue);
       --extra: var(--magenta);
-      --side: 210px;
-      --rail: 48px;
       --gap: 52px;
       --r-card: 18px;
       --r-pill: 999px;
       --r-soft: 14px;
       --r-media: 16px;
-      --serif: "Source Serif 4", "Palatino Linotype", "Songti SC", serif;
+      --serif: "Lora", "Palatino Linotype", "Songti SC", serif;
       --sans: "DM Sans", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
     }
 
@@ -62,152 +52,50 @@
       line-height: 1.55;
     }
 
-    /* —— Two-column shell —— */
-    .shell {
-      display: grid;
-      grid-template-columns: var(--side) minmax(0, 1fr);
-      gap: var(--gap);
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 36px 96px;
-      align-items: start;
-    }
-
-    /* —— Sticky left sidebar: soft fills, no stroked panels —— */
-    .sidebar {
+    .topbar {
       position: sticky;
-      top: 28px;
-      align-self: start;
-      max-height: calc(100vh - 56px);
-      overflow-y: auto;
-      padding-right: 4px;
+      top: 0;
+      z-index: 8;
+      background: rgba(242, 240, 230, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .side-head {
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px 36px 12px;
+    }
+    .topbar-row {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 22px;
     }
-    .side-toggle {
-      appearance: none;
-      flex: 0 0 auto;
-      width: 28px;
-      height: 28px;
-      margin-top: 4px;
-      padding: 0;
-      border: none;
-      border-radius: 0;
-      background: transparent;
-      color: var(--faint);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-    }
-    .side-toggle:hover { color: var(--ink); background: transparent; }
-    html.side-collapsed .side-toggle,
-    html.side-collapsed .side-toggle:hover {
-      background: transparent;
-      color: var(--ink);
-    }
-    .side-toggle:focus-visible {
-      outline: 2px solid var(--yellow);
-      outline-offset: 2px;
-    }
-    .side-toggle-icon { display: block; }
     .logo {
       display: inline-block;
+      flex: 0 0 auto;
       font-family: var(--serif);
-      font-size: 1.45rem;
-      font-weight: 400;
+      font-size: 1.35rem;
+      font-weight: 500;
       letter-spacing: -0.01em;
       line-height: 1;
-      margin: 0 0 18px;
+      margin: 0 8px 0 0;
       color: var(--ink);
       background: transparent;
       padding: 0;
     }
     .logo em { font-style: italic; color: var(--ink); }
-    .side-kicker {
-      margin: 0 0 22px;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--faint);
-      font-weight: 500;
-    }
-    .side-label {
-      margin: 22px 0 10px;
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--faint);
-      font-weight: 600;
-      /* space + type only — no rule */
-      border: none;
-      padding-top: 0;
-    }
 
     .slot-nav {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-      margin: 0 0 28px;
-    }
-    .slot-nav button {
-      appearance: none;
-      display: inline-block;
-      width: auto;
-      text-align: left;
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 400;
-      padding: 4px 0 5px;
-      cursor: pointer;
-      letter-spacing: 0;
-    }
-    .slot-nav button:hover {
-      background: transparent;
-      color: var(--ink);
-    }
-    .slot-nav button.active,
-    .slot-nav button[data-quality].active {
-      background: transparent;
-      color: var(--ink);
-      font-weight: 600;
-      box-shadow: inset 0 -2px 0 var(--yellow);
-    }
-
-    .sidebar input#q {
-      width: 100%;
-      border: none;
-      border-bottom: 1px solid var(--line);
-      background: transparent;
-      border-radius: 0;
-      padding: 8px 0 7px;
-      font-size: 0.84rem;
-      font-family: inherit;
-      color: var(--ink);
-      outline: none;
-      margin: 0 0 28px;
-    }
-    .sidebar input#q::placeholder { color: var(--faint); }
-    .sidebar input#q:focus {
-      background: transparent;
-      border-bottom-color: var(--ink);
-    }
-
-    .day-nav {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px 18px;
       margin: 0;
+      flex: 1 1 auto;
     }
+    .slot-nav button,
     .day-nav button {
       appearance: none;
       display: inline-block;
@@ -218,15 +106,18 @@
       border-radius: 0;
       color: var(--muted);
       font-family: inherit;
-      font-size: 0.84rem;
       font-weight: 400;
-      padding: 4px 0 5px;
       cursor: pointer;
+      padding: 4px 0 6px;
     }
+    .slot-nav button { font-size: 0.92rem; }
+    .slot-nav button:hover,
     .day-nav button:hover {
       background: transparent;
       color: var(--ink);
     }
+    .slot-nav button.active,
+    .slot-nav button[data-quality].active,
     .day-nav button.active {
       background: transparent;
       color: var(--ink);
@@ -234,19 +125,43 @@
       box-shadow: inset 0 -2px 0 var(--yellow);
     }
 
-    /* Collapsed: slim rail, filters one click away, main takes the width */
-    html.side-collapsed .shell {
-      grid-template-columns: var(--rail) minmax(0, 1fr);
-      gap: 28px;
+    .topbar input#q {
+      flex: 0 1 160px;
+      min-width: 120px;
+      margin-left: auto;
+      width: 160px;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      border-radius: 0;
+      padding: 6px 0 5px;
+      font-size: 0.84rem;
+      font-family: inherit;
+      color: var(--ink);
+      outline: none;
     }
-    html.side-collapsed .sidebar {
-      padding-right: 0;
-      overflow: visible;
+    .topbar input#q::placeholder { color: var(--faint); }
+    .topbar input#q:focus {
+      background: transparent;
+      border-bottom-color: var(--ink);
     }
-    html.side-collapsed .side-head { display: block; }
-    html.side-collapsed .side-brand,
-    html.side-collapsed .sidebar-panel { display: none; }
-    html.side-collapsed .side-toggle-icon { transform: rotate(180deg); }
+
+    .day-nav {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px 16px;
+      margin: 8px 0 0;
+      padding-top: 6px;
+    }
+    .day-nav button { font-size: 0.82rem; }
+
+    .shell {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 36px 96px;
+    }
 
     /* —— Main column —— */
     .main-col { min-width: 0; }
@@ -337,23 +252,24 @@
     }
     .slot-chip, .quality-chip {
       display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: var(--r-pill);
+      padding: 0;
+      border-radius: 0;
+      background: none;
       font-family: var(--sans);
       border: none;
     }
-    .slot-chip.day { background: var(--day); color: var(--ink); }
-    .slot-chip.night { background: var(--night); color: #fff; }
-    .slot-chip.extra { background: var(--extra); color: #fff; }
-    .quality-chip.full { background: var(--lime); color: var(--ink); }
+    .slot-chip.day { color: var(--day); }
+    .slot-chip.night { color: var(--night); }
+    .slot-chip.extra { color: var(--extra); }
+    .quality-chip.full { color: var(--teal); }
     .quality-chip.thin {
-      background: var(--field);
-      color: var(--muted);
-      border: 1px solid var(--field-edge);
+      color: var(--faint);
+      background: none;
+      border: none;
       font-weight: 600;
     }
 
@@ -463,19 +379,19 @@
     }
     .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); line-height: 1.65; }
     .detail .label {
-      display: inline-block;
-      color: var(--bg);
-      background: var(--teal);
-      font-size: 0.68rem;
-      margin: 16px 0 8px;
-      padding: 6px 10px;
-      border-radius: var(--r-pill);
+      display: block;
+      color: var(--muted);
+      background: none;
+      font-size: 0.72rem;
+      margin: 18px 0 6px;
+      padding: 0;
+      border-radius: 0;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 600;
     }
-    .detail .label.why { background: var(--red); }
-    .detail .label.level { background: var(--blue); }
+    .detail .label.why,
+    .detail .label.level { background: none; color: var(--muted); }
     .detail .label:first-of-type { margin-top: 0; }
     .detail .pending {
       color: var(--muted);
@@ -548,34 +464,10 @@
     }
 
     @media (max-width: 800px) {
-      .shell,
-      html.side-collapsed .shell {
-        grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 28px 18px 80px;
-      }
-      .sidebar {
-        position: static;
-        max-height: none;
-        overflow: visible;
-        border-bottom: none;
-        padding-bottom: 8px;
-      }
-      .side-toggle { display: none; }
-      html.side-collapsed .side-brand,
-      html.side-collapsed .sidebar-panel { display: block; }
-      .side-head { display: block; }
-      .slot-nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 4px 16px;
-        margin-bottom: 18px;
-      }
-      .day-nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 4px 14px;
-      }
+      .topbar-inner { padding: 14px 18px 10px; }
+      .topbar-row { gap: 8px 14px; }
+      .topbar input#q { margin-left: 0; flex: 1 1 140px; }
+      .shell { padding: 28px 18px 80px; }
       .hero { margin-bottom: 36px; }
       .hero-frame { padding: 0; }
       .hero-lede { font-size: 2.65rem; max-width: none; }
@@ -586,34 +478,23 @@
   </style>
 </head>
 <body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-row">
+        <div class="logo">V<em>W</em></div>
+        <nav class="slot-nav" aria-label="Filters">
+          <button type="button" data-slot="all" class="active">All</button>
+          <button type="button" data-slot="day">Day</button>
+          <button type="button" data-slot="night">Night</button>
+          <button type="button" data-slot="extra">Extra</button>
+          <button type="button" data-quality="full">Full summaries</button>
+        </nav>
+        <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
+      <nav class="day-nav" id="day-nav" aria-label="Dates"></nav>
+    </div>
+  </header>
   <div class="shell">
-    <aside class="sidebar" id="sidebar" aria-label="Filters">
-      <div class="side-head">
-        <div class="side-brand">
-          <div class="logo">V<em>W</em></div>
-        </div>
-        <button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-controls="sidebar-panel" aria-label="Hide filters">
-          <svg class="side-toggle-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false">
-            <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-      <div class="sidebar-panel" id="sidebar-panel">
-
-      <nav class="slot-nav">
-        <button type="button" data-slot="all" class="active">All</button>
-        <button type="button" data-slot="day">Day</button>
-        <button type="button" data-slot="night">Night</button>
-        <button type="button" data-slot="extra">Extra</button>
-        <button type="button" data-quality="full">Full summaries</button>
-      </nav>
-
-      <input id="q" type="search" placeholder="Search…" autocomplete="off" />
-
-      <nav class="day-nav" id="day-nav"></nav>
-      </div>
-    </aside>
-
     <div class="main-col">
       <header class="hero">
         <div class="hero-frame">
@@ -819,21 +700,6 @@
     qInput.addEventListener("input", () => {
       query = qInput.value.trim().toLowerCase();
       render();
-    });
-
-    const SIDE_KEY = "victoria-listening-sidebar";
-    const sideToggle = document.getElementById("side-toggle");
-    function setSidebarCollapsed(collapsed, persist) {
-      document.documentElement.classList.toggle("side-collapsed", collapsed);
-      sideToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
-      sideToggle.setAttribute("aria-label", collapsed ? "Show filters" : "Hide filters");
-      if (persist) {
-        try { localStorage.setItem(SIDE_KEY, collapsed ? "collapsed" : "expanded"); } catch (e) {}
-      }
-    }
-    setSidebarCollapsed(document.documentElement.classList.contains("side-collapsed"), false);
-    sideToggle.addEventListener("click", () => {
-      setSidebarCollapsed(!document.documentElement.classList.contains("side-collapsed"), true);
     });
 
     render();
