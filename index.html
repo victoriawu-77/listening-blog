@@ -306,7 +306,7 @@
     .dek {
       margin: 14px 0 0;
       font-size: 0.95rem;
-      line-height: 1.65;
+      line-height: 1.75;
       color: var(--ink);
       max-width: 40em;
     }
@@ -377,7 +377,18 @@
       border: 0;
       display: block;
     }
-    .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); line-height: 1.65; }
+    .detail p { margin: 0 0 0.9em; font-size: 0.95rem; color: var(--ink); line-height: 1.75; }
+    .detail p:last-child { margin-bottom: 0; }
+    .detail ol.points {
+      margin: 0.2em 0 0.4em;
+      padding: 0 0 0 1.35em;
+      line-height: 1.75;
+    }
+    .detail ol.points li {
+      margin: 0 0 0.75em;
+      padding: 0;
+    }
+    .detail ol.points li:last-child { margin-bottom: 0; }
     .detail .label {
       display: block;
       color: var(--muted);
@@ -578,13 +589,90 @@
     }
 
 
+    const CIRCLED = /[\u2460-\u2473]/;
+
+    function stripEdgePunct(s) {
+      return String(s || "").trim().replace(/^[：:.\s]+/, "").replace(/[：:；;\s]+$/, "");
+    }
+
+    function splitEnumerated(text) {
+      const re = /(?:^|\s)(\d{1,2})[.、．)）]\s+/g;
+      const marks = [];
+      let m;
+      while ((m = re.exec(text))) {
+        const num = Number(m[1]);
+        if (num < 1 || num > 30) continue;
+        marks.push({ index: m.index + (m[0].startsWith(" ") || m[0].startsWith("\n") ? 1 : 0), len: m[0].length - (m[0].startsWith(" ") ? 1 : 0) });
+      }
+      if (marks.length < 2) return null;
+      const lead = stripEdgePunct(text.slice(0, marks[0].index));
+      const items = [];
+      for (let i = 0; i < marks.length; i++) {
+        const start = marks[i].index + marks[i].len;
+        const end = i + 1 < marks.length ? marks[i + 1].index : text.length;
+        const body = stripEdgePunct(text.slice(start, end));
+        if (body) items.push(body);
+      }
+      return items.length ? { lead, items } : null;
+    }
+
+    function splitCircled(text) {
+      if (!CIRCLED.test(text)) return null;
+      const chunks = text.split(/(?=[\u2460-\u2473])/);
+      let lead = "";
+      const items = [];
+      chunks.forEach(chunk => {
+        if (CIRCLED.test(chunk.charAt(0))) {
+          const body = stripEdgePunct(chunk.slice(1));
+          if (body) items.push(body);
+        } else {
+          lead = stripEdgePunct(chunk);
+        }
+      });
+      return items.length ? { lead, items } : null;
+    }
+
+    function splitSentences(text) {
+      const parts = text.split(/(?<=[。！？])/).map(s => s.trim()).filter(Boolean);
+      const paras = [];
+      parts.forEach(sentence => {
+        if (sentence.length > 140 && (sentence.match(/；/g) || []).length >= 2) {
+          sentence.split("；").map(s => s.trim()).filter(Boolean).forEach((bit, i, arr) => {
+            paras.push(i < arr.length - 1 ? bit + "；" : bit);
+          });
+        } else {
+          paras.push(sentence);
+        }
+      });
+      return paras;
+    }
+
+    function formatRich(raw) {
+      const text = String(raw || "").replace(/\s+/g, " ").trim();
+      if (!text) return "";
+      const listed = splitCircled(text) || splitEnumerated(text);
+      if (listed) {
+        let html = "";
+        if (listed.lead) html += `<p>${escapeHtml(listed.lead)}</p>`;
+        html += `<ol class="points">` + listed.items.map(item => `<li>${escapeHtml(item)}</li>`).join("") + `</ol>`;
+        return html;
+      }
+      const paras = splitSentences(text);
+      if (paras.length >= 3 || (text.length > 160 && paras.length > 1)) {
+        return paras.map(p => `<p>${escapeHtml(p)}</p>`).join("");
+      }
+      return `<p>${escapeHtml(text)}</p>`;
+    }
+
     function summaryDek(item, thin) {
       if (thin) return `<p class="dek pending">Summary still catching up — open the video meanwhile.</p>`;
       const raw = String(item.summary || "").trim();
-      // Prefer first 1–2 sentences for the always-visible dek
-      let dek = raw;
-      const parts = raw.split(/(?<=[。！？.!?])\s*/);
-      if (parts.length > 2) dek = parts.slice(0, 2).join("");
+      const listed = splitCircled(raw);
+      let dek = listed && listed.lead ? listed.lead : raw;
+      if (!listed) {
+        const parts = raw.split(/(?<=[。！？.!?])\s*/).filter(Boolean);
+        if (parts.length > 2) dek = parts.slice(0, 2).join("");
+      }
       return `<p class="dek">${escapeHtml(dek)}</p>`;
     }
 
@@ -625,13 +713,13 @@
           card.dataset.id = item.id;
           const thin = item.summary_quality !== "full";
           const whyBlock = (!thin && item.why)
-            ? `<p class="label why">Why watch</p><p>${escapeHtml(item.why)}</p>`
+            ? `<p class="label why">Why watch</p>${formatRich(item.why)}`
             : "";
           const diffBlock = (!thin && item.difficulty)
-            ? `<p class="label level">English level</p><p>${escapeHtml(item.difficulty)}</p>`
+            ? `<p class="label level">English level</p>${formatRich(item.difficulty)}`
             : "";
           const fullSummaryBlock = (!thin && item.summary)
-            ? `<p>${escapeHtml(item.summary)}</p>`
+            ? formatRich(item.summary)
             : (thin ? `<p class="pending">Summary still catching up — open the video meanwhile.</p>` : "");
           card.innerHTML = `
             <div class="card-head">
