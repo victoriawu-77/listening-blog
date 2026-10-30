@@ -89,13 +89,6 @@
       letter-spacing: -0.12em;
       line-height: 0.8;
     }
-    .logo-bar {
-      display: block;
-      width: 100%;
-      height: 3px;
-      border-radius: 2px;
-      background: var(--yellow);
-    }
 
     .filter-row {
       display: flex;
@@ -649,15 +642,13 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="topbar-row">
-        <div class="logo" aria-label="Listening Log"><span class="logo-ll">LL</span><span class="logo-bar" aria-hidden="true"></span></div>
+        <div class="logo" aria-label="Listening Log"><span class="logo-ll">LL</span></div>
         <input id="q" type="search" placeholder="Search…" autocomplete="off" />
       </div>
       <div class="filter-row">
         <nav class="slot-nav" aria-label="Filters">
-          <button type="button" data-slot="all" class="active">All</button>
           <button type="button" data-slot="day">Day</button>
           <button type="button" data-slot="night">Night</button>
-          <button type="button" data-slot="extra">Extra</button>
         </nav>
         <div class="date-control">
           <button type="button" class="date-toggle" id="date-toggle" aria-expanded="false" aria-controls="date-popover">Pick a date</button>
@@ -708,11 +699,18 @@
     let viewYear = 2026;
     let viewMonth = 9;
     const DAY_KEY = "victoria-listening-day-folds";
-    let slot = "all";
+    let slot = defaultSlot();
     let dayFilter = "all";
     let query = "";
 
-    const slotLabel = { day: "Day", night: "Night", extra: "Extra" };
+    const slotLabel = { day: "Day", night: "Night", extra: "Day" };
+    function effectiveSlot(item) {
+      return item && item.slot === "extra" ? "day" : (item && item.slot) || "";
+    }
+    function defaultSlot() {
+      const hour = new Date().getHours();
+      return hour >= 6 && hour < 18 ? "day" : "night";
+    }
     const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
     function fmtDateShort(d) {
@@ -726,7 +724,7 @@
     }
 
     function matchItem(item, day) {
-      if (slot !== "all" && item.slot !== slot) return false;
+      if (effectiveSlot(item) !== slot) return false;
       if (dayFilter !== "all" && day.date !== dayFilter) return false;
       if (query) {
         const hay = [item.title, item.channel, item.summary, item.why, item.difficulty, day.date].join(" ").toLowerCase();
@@ -908,7 +906,8 @@
 
         items.forEach(item => {
           const card = document.createElement("article");
-          card.className = "card slot-" + (item.slot || "");
+          const shownSlot = effectiveSlot(item);
+          card.className = "card slot-" + shownSlot;
           card.dataset.id = item.id;
           const thin = item.summary_quality !== "full";
           const whyBlock = (!thin && item.why)
@@ -922,7 +921,7 @@
             : (thin ? `<p class="pending">Summary still catching up — open the video meanwhile.</p>` : "");
           card.innerHTML = `
             <div class="card-head">
-              <span class="slot-chip ${item.slot}" aria-label="${slotLabel[item.slot] || item.slot}">${slotLabel[item.slot] || item.slot}</span>
+              <span class="slot-chip ${shownSlot}" aria-label="${slotLabel[shownSlot] || shownSlot}">${slotLabel[shownSlot] || shownSlot}</span>
               <span class="quality-chip ${thin ? "thin" : "full"}">${thin ? "Pending" : "Full"}</span>
             </div>
             <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
@@ -990,6 +989,7 @@
     });
 
     document.querySelectorAll(".slot-nav button[data-slot]").forEach(b => {
+      b.classList.toggle("active", b.dataset.slot === slot);
       b.addEventListener("click", () => {
         slot = b.dataset.slot;
         document.querySelectorAll(".slot-nav button[data-slot]").forEach(x => x.classList.toggle("active", x === b));
