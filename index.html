@@ -8,34 +8,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <script>
-    /* Default collapsed so the sidebar does not spend width. "expanded" restores it. */
+    /* Default open. Collapse only when a saved preference says so. */
     try {
-      if (localStorage.getItem("victoria-listening-sidebar") !== "expanded") {
+      if (localStorage.getItem("victoria-listening-sidebar") === "collapsed") {
         document.documentElement.classList.add("side-collapsed");
       }
-    } catch (e) {
-      document.documentElement.classList.add("side-collapsed");
-    }
+    } catch (e) {}
   </script>
   <style>
     :root {
-      /* Particle cream + voltage gold */
+      /* Particle cream ground + charcoal type + distinct band accents */
       --bg: #F2F0E6;
       --ink: #171715;
-      --muted: #4A4842;
-      --faint: #8A877C;
+      --muted: #4E4C46;
+      --faint: #7A776C;
       --soft: #F8F6EE;
-      --soft-2: #E7E3D4;
+      --soft-2: #E8E4D6;
       --line: #E4E0D2;
-      --yellow: #F7CC00;
-      --red: #F7CC00;
-      --coral: #F7CC00;
-      --blue: #171715;
-      --magenta: #F7CC00;
-      --teal: #171715;
-      --day: var(--yellow);
-      --night: var(--ink);
-      --extra: var(--yellow);
+      --yellow: #F7CC00; /* voltage gold — CTA and active */
+      --coral: #EF6B00;  /* burnt orange */
+      --red: #E10600;    /* ruby */
+      --lime: #C6F000;   /* bright yellow-green */
+      --teal: #128A45;   /* deep forest */
+      --blue: #1A4DFF;   /* royal blue */
+      --magenta: #C026D3; /* purple / magenta */
+      --day: var(--coral);
+      --night: var(--blue);
+      --extra: var(--magenta);
       --side: 210px;
       --rail: 48px;
       --gap: 52px;
@@ -113,11 +112,12 @@
       color: var(--yellow);
     }
     .side-toggle:focus-visible {
-      outline: 2px solid var(--coral);
+      outline: 2px solid var(--yellow);
       outline-offset: 2px;
     }
     .side-toggle-icon { display: block; }
     .logo {
+      display: inline-block;
       font-family: var(--serif);
       font-size: 1.65rem;
       font-weight: 400;
@@ -125,6 +125,9 @@
       line-height: 1;
       margin: 0 0 6px;
       color: var(--ink);
+      background: var(--yellow);
+      padding: 8px 12px 6px;
+      border-radius: 14px;
     }
     .logo em { font-style: italic; color: var(--ink); }
     .side-kicker {
@@ -269,11 +272,16 @@
     /* —— Main column —— */
     .main-col { min-width: 0; }
 
-    .hero { margin-bottom: 32px; }
-    /* no red frame — type + whitespace only */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(148px, 0.55fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 56px;
+    }
     .hero-frame {
       border: none;
-      padding: 8px 0 0;
+      padding: 4px 0 0;
       border-radius: 0;
       background: transparent;
     }
@@ -281,42 +289,48 @@
       margin: 0;
       font-family: var(--serif);
       font-weight: 400;
-      font-size: clamp(1.85rem, 3.6vw, 2.55rem);
-      line-height: 1.18;
-      letter-spacing: -0.02em;
+      font-size: clamp(3.15rem, 6.2vw, 5.35rem);
+      line-height: 0.92;
+      letter-spacing: -0.035em;
       color: var(--ink);
-      max-width: 18em;
+      max-width: 11em;
     }
     .hero-lede em {
       font-style: italic;
       font-weight: 400;
     }
     .hero-sub {
-      margin: 18px 0 0;
+      margin: 22px 0 0;
       font-size: 0.78rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
-      font-weight: 500;
+      font-weight: 600;
+    }
+    .hero-bands {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
+      min-height: 100%;
     }
-    .hero-sub::before {
-      content: "";
-      width: 10px;
-      height: 10px;
-      border-radius: var(--r-pill);
-      background: var(--yellow);
-      flex: 0 0 auto;
+    .hero-bands span {
+      flex: 1 1 0;
+      min-height: 28px;
+      border-radius: 14px;
     }
+    .band-orange { background: var(--coral); }
+    .band-ruby { background: var(--red); }
+    .band-forest { background: var(--teal); }
+    .band-lime { background: var(--lime); }
+    .band-blue { background: var(--blue); }
+    .band-magenta { background: var(--magenta); }
     /* small accent mark only — not a full-width bar */
     .yellow-bar {
       display: none;
     }
 
     .note {
-      margin: 0 0 40px;
+      margin: 0 0 56px;
       padding: 14px 18px;
       border: none;
       border-radius: var(--r-soft);
@@ -327,13 +341,14 @@
     }
 
     /* —— Day blocks: space + type, no heavy rule —— */
-    .day-block { margin-bottom: 56px; }
+    .day-block { margin-bottom: 80px; }
     .day-block h2 {
       font-family: var(--serif);
       font-weight: 400;
-      font-size: clamp(1.75rem, 3vw, 2.1rem);
-      letter-spacing: -0.02em;
-      margin: 0 0 22px;
+      font-size: clamp(2.4rem, 4.4vw, 3.55rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin: 0 0 28px;
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
@@ -355,53 +370,63 @@
       position: relative;
       background: var(--soft);
       border: none;
-      border-radius: var(--r-card);
-      padding: 22px 22px 20px;
-      margin: 0 0 20px;
+      border-radius: 22px;
+      padding: 0;
+      margin: 0 0 22px;
+      overflow: hidden;
       border-left: none;
     }
     .card.slot-day,
     .card.slot-night,
     .card.slot-extra { border-left: none; }
-    .card + .card { padding-top: 22px; }
+    .card-band {
+      display: flex;
+      align-items: center;
+      min-height: 76px;
+      padding: 16px 22px;
+    }
+    .card.slot-day .card-band { background: var(--day); color: var(--ink); }
+    .card.slot-night .card-band { background: var(--night); color: var(--bg); }
+    .card.slot-extra .card-band { background: var(--extra); color: var(--bg); }
+    .card-body { padding: 22px 24px 22px; }
 
     .card-head {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      width: 100%;
     }
     .slot-chip, .quality-chip {
       display: inline-block;
-      font-size: 0.65rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 5px 11px;
+      padding: 8px 14px;
       border-radius: var(--r-pill);
-      color: var(--ink);
+      color: inherit;
       font-family: var(--sans);
       border: none;
     }
-    .slot-chip.day { background: var(--day); }
-    .slot-chip.night { background: var(--night); color: var(--bg); }
-    .slot-chip.extra { background: var(--magenta); }
-    .quality-chip.full { background: var(--yellow); }
+    .slot-chip { padding-left: 0; background: transparent; }
+    .quality-chip.full { background: var(--lime); color: var(--ink); }
     .quality-chip.thin {
       background: var(--bg);
       color: var(--faint);
       border: none;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .card h3 {
       margin: 0;
       font-family: var(--serif);
-      font-size: clamp(1.3rem, 2.2vw, 1.55rem);
+      font-size: clamp(1.65rem, 2.4vw, 2.15rem);
       font-weight: 400;
-      letter-spacing: -0.015em;
-      line-height: 1.28;
-      max-width: 28em;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      max-width: 22em;
     }
     .card h3 a {
       color: var(--ink);
@@ -411,7 +436,7 @@
       color: var(--ink);
       text-decoration: underline;
       text-decoration-color: var(--yellow);
-      text-underline-offset: 3px;
+      text-underline-offset: 4px;
     }
 
     .meta {
@@ -444,7 +469,7 @@
     .actions button, .actions a.btn {
       appearance: none;
       border: none;
-      background: var(--bg);
+      background: #fff;
       color: var(--ink);
       border-radius: var(--r-pill);
       padding: 8px 16px;
@@ -459,6 +484,10 @@
     .actions button.primary {
       background: var(--yellow);
       color: var(--ink);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 18px;
     }
     .actions button.primary:hover {
       background: var(--ink);
@@ -466,6 +495,7 @@
     }
     .actions a.btn:hover {
       background: var(--yellow);
+      color: var(--ink);
     }
 
     .detail {
@@ -494,13 +524,19 @@
     }
     .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); line-height: 1.65; }
     .detail .label {
-      color: var(--ink);
-      font-size: 0.65rem;
-      margin: 14px 0 4px;
+      display: inline-block;
+      color: var(--bg);
+      background: var(--teal);
+      font-size: 0.68rem;
+      margin: 16px 0 8px;
+      padding: 6px 10px;
+      border-radius: var(--r-pill);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 700;
     }
+    .detail .label.why { background: var(--red); }
+    .detail .label.level { background: var(--blue); }
     .detail .label:first-of-type { margin-top: 0; }
     .detail .pending {
       color: var(--muted);
@@ -518,22 +554,27 @@
       margin-bottom: 8px;
       padding: 12px 16px;
       border-bottom: none;
-      background: var(--bg);
+      background: var(--soft);
       border-radius: var(--r-soft);
     }
     .expr li:last-child { border-bottom: none; }
     .expr li strong { color: var(--ink); font-weight: 700; }
     .day-expr {
-      margin-top: 12px;
-      padding-top: 8px;
+      margin-top: 8px;
+      padding-top: 0;
       border-top: none;
     }
     .day-expr h4 {
-      margin: 0 0 12px;
+      margin: 0 0 14px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      background: var(--lime);
+      color: var(--ink);
       font-family: var(--serif);
-      font-size: 1.25rem;
+      font-size: clamp(1.6rem, 2.4vw, 2rem);
       font-weight: 400;
       font-style: italic;
+      line-height: 1;
     }
 
     footer {
@@ -608,9 +649,14 @@
         padding: 7px 12px;
       }
       .day-nav button.active { background: var(--yellow); }
+      .hero { grid-template-columns: 1fr; gap: 16px; margin-bottom: 36px; }
+      .hero-bands { flex-direction: row; min-height: 0; height: 36px; }
+      .hero-bands span { min-height: 0; }
       .hero-frame { padding: 0; }
-      .hero-lede { font-size: 1.65rem; max-width: none; }
-      .card { margin-bottom: 16px; padding: 18px; }
+      .hero-lede { font-size: 2.65rem; max-width: none; }
+      .day-block h2 { font-size: 2.15rem; }
+      .card { margin-bottom: 16px; }
+      .card-body { padding: 18px; }
     }
   </style>
 </head>
@@ -622,7 +668,7 @@
           <div class="logo">V<em>W</em></div>
           <p class="side-kicker">Listening Log</p>
         </div>
-        <button type="button" class="side-toggle" id="side-toggle" aria-expanded="false" aria-controls="sidebar-panel" aria-label="Show filters">
+        <button type="button" class="side-toggle" id="side-toggle" aria-expanded="true" aria-controls="sidebar-panel" aria-label="Hide filters">
           <svg class="side-toggle-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false">
             <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -654,6 +700,14 @@
         <div class="hero-frame">
           <p class="hero-lede">Victoria’s <em>Listening</em> Log — English tech talks by <em>day</em>, podcasts by <em>night</em>.</p>
           <p class="hero-sub">Curated by Lenny</p>
+        </div>
+        <div class="hero-bands" aria-hidden="true">
+          <span class="band-orange"></span>
+          <span class="band-ruby"></span>
+          <span class="band-forest"></span>
+          <span class="band-lime"></span>
+          <span class="band-blue"></span>
+          <span class="band-magenta"></span>
         </div>
       </header>
 
@@ -790,32 +844,36 @@
           card.dataset.id = item.id;
           const thin = item.summary_quality !== "full";
           const whyBlock = (!thin && item.why)
-            ? `<p class="label">Why watch</p><p>${escapeHtml(item.why)}</p>`
+            ? `<p class="label why">Why watch</p><p>${escapeHtml(item.why)}</p>`
             : "";
           const diffBlock = (!thin && item.difficulty)
-            ? `<p class="label">English level</p><p>${escapeHtml(item.difficulty)}</p>`
+            ? `<p class="label level">English level</p><p>${escapeHtml(item.difficulty)}</p>`
             : "";
           const fullSummaryBlock = (!thin && item.summary)
             ? `<p class="label">Summary</p><p>${escapeHtml(item.summary)}</p>`
             : (thin ? `<p class="label">Summary</p><p class="pending">Summary still catching up — open the video meanwhile.</p>` : "");
           card.innerHTML = `
-            <div class="card-head">
-              <span class="slot-chip ${item.slot}" aria-label="${slotLabel[item.slot] || item.slot}">${slotLabel[item.slot] || item.slot}</span>
-              <span class="quality-chip ${thin ? "thin" : "full"}">${thin ? "Pending" : "Full"}</span>
+            <div class="card-band">
+              <div class="card-head">
+                <span class="slot-chip ${item.slot}" aria-label="${slotLabel[item.slot] || item.slot}">${slotLabel[item.slot] || item.slot}</span>
+                <span class="quality-chip ${thin ? "thin" : "full"}">${thin ? "Pending" : "Full"}</span>
+              </div>
             </div>
-            <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
-            <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
-              (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
-            ${summaryDek(item, thin)}
-            <div class="actions">
-              <button type="button" class="primary" data-act="toggle">Collapse</button>
-              <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube ↗</a>
-            </div>
-            <div class="detail open" id="d-${item.id}">
-              <div class="video" data-vid="${escapeHtml(item.id)}"></div>
-              ${fullSummaryBlock}
-              ${whyBlock}
-              ${diffBlock}
+            <div class="card-body">
+              <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
+              <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
+                (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
+              ${summaryDek(item, thin)}
+              <div class="actions">
+                <button type="button" class="primary" data-act="toggle">Collapse</button>
+                <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube ↗</a>
+              </div>
+              <div class="detail open" id="d-${item.id}">
+                <div class="video" data-vid="${escapeHtml(item.id)}"></div>
+                ${fullSummaryBlock}
+                ${whyBlock}
+                ${diffBlock}
+              </div>
             </div>`;
           block.appendChild(card);
           mountEmbed(card.querySelector(".video"));
