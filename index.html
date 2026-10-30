@@ -411,20 +411,34 @@
     }
 
     .expr {
-      margin: 10px 0 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin: 0;
       padding: 0;
-      list-style: none;
     }
-    .expr li {
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      padding: 12px 16px;
-      border-bottom: none;
-      background: var(--bg);
-      border-radius: var(--r-soft);
+    .expr-card {
+      border: none;
+      border-radius: 16px;
+      padding: 16px 18px 15px;
+      background: var(--soft);
     }
-    .expr li:last-child { border-bottom: none; }
-    .expr li strong { color: var(--ink); font-weight: 700; }
+    .expr-card:nth-child(even) { background: #E7E1D2; }
+    .expr-en {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.12rem;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+    .expr-zh {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
     .day-expr {
       margin-top: 8px;
       padding-top: 0;
@@ -485,6 +499,7 @@
       .hero-line { font-size: 1.45rem; max-width: none; }
       .day-block h2 { font-size: 2.15rem; }
       .card { margin-bottom: 16px; padding: 18px; }
+      .expr { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -747,9 +762,9 @@
         if (day.expressions && day.expressions.length && items.length) {
           const ex = document.createElement("div");
           ex.className = "day-expr";
-          ex.innerHTML = `<h4>Expressions</h4><ul class="expr">` +
-            day.expressions.map(e => `<li><strong>${escapeHtml(e.en)}</strong> — ${escapeHtml(e.zh)}</li>`).join("") +
-            `</ul>`;
+          ex.innerHTML = `<h4>Expressions</h4><div class="expr">` +
+            day.expressions.map(e => `<article class="expr-card"><p class="expr-en">${escapeHtml(e.en)}</p><p class="expr-zh">${escapeHtml(e.zh)}</p></article>`).join("") +
+            `</div>`;
           block.appendChild(ex);
         }
 
