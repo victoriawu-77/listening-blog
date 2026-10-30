@@ -84,7 +84,6 @@
       background: transparent;
       padding: 0;
     }
-    .logo em { color: var(--ink); }
 
     .filter-row {
       display: flex;
@@ -117,7 +116,7 @@
       cursor: pointer;
       padding: 4px 0 6px;
     }
-    .slot-nav button { font-size: 0.92rem; }
+    .slot-nav button { font-size: 1.2rem; padding: 8px 0 10px; }
     .slot-nav button:hover,
     .date-toggle:hover,
     .date-reset:hover {
@@ -160,8 +159,18 @@
       margin-left: auto;
       position: relative;
     }
-    .date-toggle { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--yellow); }
-    .date-reset { font-size: 0.82rem; }
+    .date-toggle { color: var(--muted); font-size: 1.15rem; font-weight: 500; padding: 8px 0 10px; }
+    .date-control.is-set .date-toggle {
+      color: var(--ink);
+      font-weight: 600;
+      box-shadow: inset 0 -2px 0 var(--yellow);
+    }
+    .date-reset {
+      font-size: 1.25rem;
+      line-height: 1;
+      padding: 0 2px 4px;
+      color: var(--faint);
+    }
     .date-input {
       position: absolute;
       width: 1px;
@@ -199,12 +208,6 @@
       letter-spacing: -0.012em;
       color: var(--ink);
       max-width: 11em;
-    }
-    .hero-lede em,
-    .hero-line em,
-    .logo em {
-      font-style: italic;
-      font-weight: 600;
     }
     .hero-line {
       margin: 14px 0 0;
@@ -541,7 +544,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="topbar-row">
-        <div class="logo">V<em>W</em></div>
+        <div class="logo">VW</div>
         <input id="q" type="search" placeholder="Search…" autocomplete="off" />
       </div>
       <div class="filter-row">
@@ -553,8 +556,8 @@
           <button type="button" data-quality="full">Full summaries</button>
         </nav>
         <div class="date-control">
-          <button type="button" class="date-toggle" id="date-toggle">All dates</button>
-          <button type="button" class="date-reset" id="date-reset" hidden>Clear</button>
+          <button type="button" class="date-toggle" id="date-toggle">Pick a date</button>
+          <button type="button" class="date-reset" id="date-reset" hidden aria-label="Any day">×</button>
           <input class="date-input" id="date-input" type="date" aria-label="Choose a date" />
         </div>
       </div>
@@ -564,8 +567,8 @@
     <div class="main-col">
       <header class="hero">
         <div class="hero-frame">
-          <h1 class="hero-lede">Victoria’s <em>Listening</em> Log</h1>
-          <p class="hero-line">English tech talks by <em>day</em>, podcasts by <em>night</em>.</p>
+          <h1 class="hero-lede">Victoria’s Listening Log</h1>
+          <p class="hero-line">English tech talks by day, podcasts by night.</p>
         </div>
       </header>
 
@@ -748,14 +751,17 @@
     }
 
     function syncDateLabel() {
+      const control = dateToggle.closest(".date-control");
       if (dayFilter === "all") {
-        dateToggle.textContent = "All dates";
+        dateToggle.textContent = "Pick a date";
         dateReset.hidden = true;
         dateInput.value = "";
+        control.classList.remove("is-set");
       } else {
-        dateToggle.textContent = fmtDateHeading(dayFilter);
+        dateToggle.textContent = fmtDateShort(dayFilter);
         dateReset.hidden = false;
         dateInput.value = dayFilter;
+        control.classList.add("is-set");
       }
     }
 
