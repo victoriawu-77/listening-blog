@@ -19,23 +19,23 @@
   </script>
   <style>
     :root {
-      /* Danielle Levitt — olive soft cards + softened coral pink (user-approved base) */
-      --bg: #FFFFFF;
-      --ink: #3C3829;
-      --muted: #6E6A5C;
-      --faint: #9A9688;
-      --soft: #F3F1EB;
-      --soft-2: #EAE7DF;
-      --line: #E5E1D8;
-      --yellow: #E88A96;
-      --red: #E88A96;
-      --coral: #E88A96;
-      --blue: #3C3829;
-      --magenta: #E88A96;
-      --teal: #3C3829;
-      --day: var(--coral);
-      --night: var(--blue);
-      --extra: #E88A96;
+      /* Particle cream + voltage gold */
+      --bg: #F2F0E6;
+      --ink: #171715;
+      --muted: #4A4842;
+      --faint: #8A877C;
+      --soft: #F8F6EE;
+      --soft-2: #E7E3D4;
+      --line: #E4E0D2;
+      --yellow: #F7CC00;
+      --red: #F7CC00;
+      --coral: #F7CC00;
+      --blue: #171715;
+      --magenta: #F7CC00;
+      --teal: #171715;
+      --day: var(--yellow);
+      --night: var(--ink);
+      --extra: var(--yellow);
       --side: 210px;
       --rail: 48px;
       --gap: 52px;
@@ -105,12 +105,12 @@
     }
     .side-toggle:hover { background: var(--yellow); }
     html.side-collapsed .side-toggle {
-      background: var(--coral);
-      color: #fff;
+      background: var(--yellow);
+      color: var(--ink);
     }
     html.side-collapsed .side-toggle:hover {
       background: var(--ink);
-      color: #fff;
+      color: var(--yellow);
     }
     .side-toggle:focus-visible {
       outline: 2px solid var(--coral);
@@ -126,7 +126,7 @@
       margin: 0 0 6px;
       color: var(--ink);
     }
-    .logo em { font-style: italic; color: var(--red); }
+    .logo em { font-style: italic; color: var(--ink); }
     .side-kicker {
       margin: 0 0 22px;
       font-size: 0.68rem;
@@ -180,8 +180,8 @@
       font-weight: 700;
     }
     .slot-nav button[data-quality].active {
-      background: var(--coral);
-      color: #fff;
+      background: var(--yellow);
+      color: var(--ink);
     }
 
     .sidebar input#q {
@@ -379,16 +379,16 @@
       text-transform: uppercase;
       padding: 5px 11px;
       border-radius: var(--r-pill);
-      color: #fff;
+      color: var(--ink);
       font-family: var(--sans);
       border: none;
     }
     .slot-chip.day { background: var(--day); }
-    .slot-chip.night { background: var(--night); }
+    .slot-chip.night { background: var(--night); color: var(--bg); }
     .slot-chip.extra { background: var(--magenta); }
-    .quality-chip.full { background: var(--coral); }
+    .quality-chip.full { background: var(--yellow); }
     .quality-chip.thin {
-      background: #fff;
+      background: var(--bg);
       color: var(--faint);
       border: none;
       font-weight: 500;
@@ -407,7 +407,12 @@
       color: var(--ink);
       text-decoration: none;
     }
-    .card h3 a:hover { color: var(--red); }
+    .card h3 a:hover {
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--yellow);
+      text-underline-offset: 3px;
+    }
 
     .meta {
       margin: 10px 0 0;
@@ -439,7 +444,7 @@
     .actions button, .actions a.btn {
       appearance: none;
       border: none;
-      background: #fff;
+      background: var(--bg);
       color: var(--ink);
       border-radius: var(--r-pill);
       padding: 8px 16px;
@@ -452,11 +457,12 @@
       transition: background .12s ease, color .12s ease;
     }
     .actions button.primary {
-      background: var(--ink);
-      color: #fff;
+      background: var(--yellow);
+      color: var(--ink);
     }
     .actions button.primary:hover {
-      background: var(--red);
+      background: var(--ink);
+      color: var(--yellow);
     }
     .actions a.btn:hover {
       background: var(--yellow);
@@ -488,7 +494,7 @@
     }
     .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); line-height: 1.65; }
     .detail .label {
-      color: var(--red);
+      color: var(--ink);
       font-size: 0.65rem;
       margin: 14px 0 4px;
       letter-spacing: 0.12em;
@@ -512,11 +518,11 @@
       margin-bottom: 8px;
       padding: 12px 16px;
       border-bottom: none;
-      background: var(--soft);
+      background: var(--bg);
       border-radius: var(--r-soft);
     }
     .expr li:last-child { border-bottom: none; }
-    .expr li strong { color: var(--red); font-weight: 700; }
+    .expr li strong { color: var(--ink); font-weight: 700; }
     .day-expr {
       margin-top: 12px;
       padding-top: 8px;
