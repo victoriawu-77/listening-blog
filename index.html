@@ -170,14 +170,94 @@
       padding: 0 2px 4px;
       color: var(--faint);
     }
-    .date-input {
+    .date-popover {
       position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      border: 0;
-      opacity: 0;
+      top: calc(100% + 12px);
+      right: 0;
+      z-index: 20;
+      width: 320px;
+      padding: 18px 18px 14px;
+      background: #fff;
+      color: var(--ink);
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(23, 23, 21, 0.1);
     }
+    .date-popover[hidden] { display: none; }
+    .cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .cal-month {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.35rem;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .cal-nav {
+      appearance: none;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 1.7rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .cal-nav:hover { background: var(--bg); }
+    .cal-nav:disabled { color: var(--faint); cursor: default; background: transparent; }
+    .cal-week, .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+    }
+    .cal-week {
+      margin-bottom: 6px;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+    }
+    .cal-grid button {
+      appearance: none;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: #C8C2B6;
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: default;
+    }
+    .cal-grid button.is-live {
+      color: var(--ink);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .cal-grid button.is-live:hover { background: var(--bg); }
+    .cal-grid button.is-selected,
+    .cal-grid button.is-selected:hover {
+      background: var(--yellow);
+      color: var(--ink);
+    }
+    .cal-any {
+      appearance: none;
+      display: block;
+      margin: 12px auto 0;
+      padding: 6px 8px 2px;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+    .cal-any:hover { color: var(--ink); }
 
     .shell {
       max-width: 1040px;
@@ -231,7 +311,7 @@
       letter-spacing: -0.01em;
       margin: 0 0 28px;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       flex-wrap: wrap;
       gap: 14px;
       padding-bottom: 0;
@@ -241,15 +321,17 @@
       max-width: 100%;
     }
     .day-chev {
-      width: 0.42em;
-      height: 0.42em;
-      border-right: 1.6px solid currentColor;
-      border-bottom: 1.6px solid currentColor;
-      transform: translateY(-0.15em) rotate(45deg);
-      opacity: 0.4;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      border-right: 3px solid var(--ink);
+      border-bottom: 3px solid var(--ink);
+      color: var(--ink);
+      transform: rotate(45deg);
+      opacity: 1;
       flex: 0 0 auto;
     }
-    .day-block.is-collapsed .day-chev { transform: translateY(0.12em) rotate(-135deg); }
+    .day-block.is-collapsed .day-chev { transform: rotate(-135deg); }
     .day-block.is-collapsed { margin-bottom: 36px; }
     .day-block.is-collapsed .day-body,
     .day-block.is-collapsed h2 { margin-bottom: 0; }
@@ -382,9 +464,15 @@
       background: var(--ink);
       color: var(--yellow);
     }
-    .actions a.btn:hover {
-      background: var(--yellow);
+    .actions a.btn {
+      background: transparent;
+      border: 1.5px solid var(--ink);
       color: var(--ink);
+      padding: 9px 16px;
+    }
+    .actions a.btn:hover {
+      background: var(--ink);
+      color: var(--bg);
     }
 
     .detail {
@@ -554,9 +642,18 @@
           <button type="button" data-slot="extra">Extra</button>
         </nav>
         <div class="date-control">
-          <button type="button" class="date-toggle" id="date-toggle">Pick a date</button>
+          <button type="button" class="date-toggle" id="date-toggle" aria-expanded="false" aria-controls="date-popover">Pick a date</button>
           <button type="button" class="date-reset" id="date-reset" hidden aria-label="Any day">×</button>
-          <input class="date-input" id="date-input" type="date" aria-label="Choose a date" />
+          <div class="date-popover" id="date-popover" hidden>
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">‹</button>
+              <div class="cal-month" id="cal-month"></div>
+              <button type="button" class="cal-nav" id="cal-next" aria-label="Next month">›</button>
+            </div>
+            <div class="cal-week" aria-hidden="true"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <button type="button" class="cal-any" id="date-any">Any day</button>
+          </div>
         </div>
       </div>
     </div>
@@ -585,7 +682,15 @@
     const qInput = document.getElementById("q");
     const dateToggle = document.getElementById("date-toggle");
     const dateReset = document.getElementById("date-reset");
-    const dateInput = document.getElementById("date-input");
+    const datePopover = document.getElementById("date-popover");
+    const calMonth = document.getElementById("cal-month");
+    const calGrid = document.getElementById("cal-grid");
+    const calPrev = document.getElementById("cal-prev");
+    const calNext = document.getElementById("cal-next");
+    const knownDates = DATA.days.map(d => d.date).sort();
+    const knownSet = new Set(knownDates);
+    let viewYear = 2026;
+    let viewMonth = 9;
     const DAY_KEY = "victoria-listening-day-folds";
     let slot = "all";
     let dayFilter = "all";
@@ -751,12 +856,10 @@
       if (dayFilter === "all") {
         dateToggle.textContent = "Pick a date";
         dateReset.hidden = true;
-        dateInput.value = "";
         control.classList.remove("is-set");
       } else {
         dateToggle.textContent = fmtDateShort(dayFilter);
         dateReset.hidden = false;
-        dateInput.value = dayFilter;
         control.classList.add("is-set");
       }
     }
@@ -776,9 +879,9 @@
         block.id = "day-" + day.date;
         const h2 = document.createElement("h2");
         const approx = day.day_assignment && String(day.day_assignment).startsWith("approximate");
-        h2.innerHTML = escapeHtml(fmtDateHeading(day.date)) +
-          (approx ? ` <span>Date approximate</span>` : "") +
-          `<span class="day-chev" aria-hidden="true"></span>`;
+        h2.innerHTML = `<span class="day-chev" aria-hidden="true"></span>` +
+          escapeHtml(fmtDateHeading(day.date)) +
+          (approx ? ` <span>Date approximate</span>` : "");
         h2.tabIndex = 0;
         h2.setAttribute("role", "button");
         h2.setAttribute("aria-expanded", closed ? "false" : "true");
@@ -884,24 +987,95 @@
       render();
     });
 
-    const knownDates = DATA.days.map(d => d.date).sort();
-    if (knownDates.length) {
-      dateInput.min = knownDates[0];
-      dateInput.max = knownDates[knownDates.length - 1];
+    function monthIndex(iso) {
+      const [y, m] = iso.split("-").map(Number);
+      return y * 12 + (m - 1);
     }
-    dateToggle.addEventListener("click", () => {
-      if (typeof dateInput.showPicker === "function") {
-        try { dateInput.showPicker(); return; } catch (e) {}
+    const minMonth = knownDates.length ? monthIndex(knownDates[0]) : 0;
+    const maxMonth = knownDates.length ? monthIndex(knownDates[knownDates.length - 1]) : 0;
+
+    function closePopover() {
+      datePopover.hidden = true;
+      dateToggle.setAttribute("aria-expanded", "false");
+    }
+
+    function renderCalendar() {
+      const label = new Date(viewYear, viewMonth, 1).toLocaleString("en-US", { month: "long", year: "numeric" });
+      calMonth.textContent = label;
+      const here = viewYear * 12 + viewMonth;
+      calPrev.disabled = here <= minMonth;
+      calNext.disabled = here >= maxMonth;
+      calGrid.innerHTML = "";
+      const firstDow = new Date(viewYear, viewMonth, 1).getDay();
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      for (let i = 0; i < firstDow; i++) calGrid.appendChild(document.createElement("span"));
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = String(d);
+        const live = knownSet.has(iso);
+        if (live) btn.classList.add("is-live");
+        if (dayFilter === iso) btn.classList.add("is-selected");
+        btn.disabled = !live;
+        if (live) {
+          btn.addEventListener("click", () => {
+            dayFilter = iso;
+            closePopover();
+            render();
+          });
+        }
+        calGrid.appendChild(btn);
       }
-      dateInput.focus();
+    }
+
+    function openPopover() {
+      const base = dayFilter !== "all" ? dayFilter : (knownDates[knownDates.length - 1] || "2026-10-01");
+      const [y, m] = base.split("-").map(Number);
+      viewYear = y;
+      viewMonth = m - 1;
+      datePopover.hidden = false;
+      dateToggle.setAttribute("aria-expanded", "true");
+      renderCalendar();
+    }
+
+    dateToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (datePopover.hidden) openPopover();
+      else closePopover();
     });
-    dateInput.addEventListener("change", () => {
-      dayFilter = dateInput.value || "all";
-      render();
+    calPrev.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (calPrev.disabled) return;
+      viewMonth -= 1;
+      if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+      renderCalendar();
     });
-    dateReset.addEventListener("click", () => {
+    calNext.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (calNext.disabled) return;
+      viewMonth += 1;
+      if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+      renderCalendar();
+    });
+    function resetDate() {
       dayFilter = "all";
+      closePopover();
       render();
+    }
+    dateReset.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetDate();
+    });
+    document.getElementById("date-any").addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetDate();
+    });
+    document.addEventListener("click", (e) => {
+      if (!datePopover.hidden && !e.target.closest(".date-control")) closePopover();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closePopover();
     });
     main.addEventListener("keydown", (e) => {
       const heading = e.target.closest(".day-block h2");
