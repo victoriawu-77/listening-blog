@@ -6,296 +6,404 @@
   <title>Victoria’s Listening Log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <style>
     :root {
+      /* Danielle Levitt — olive soft cards + softened coral pink (user-approved base) */
       --bg: #FFFFFF;
-      --surface: #FAFAFA;
-      --ink: #0A0A0A;
-      --muted: #737373;
-      --faint: #A3A3A3;
-      --line: #E5E5E5;
-      --line-soft: #F0F0F0;
-      --coral: #FF3D1F;
-      --blue: #2B5CFF;
-      --magenta: #E11D8F;
-      --teal: #00B894;
-      --day: var(--teal);
+      --ink: #3C3829;
+      --muted: #6E6A5C;
+      --faint: #9A9688;
+      --soft: #F3F1EB;
+      --soft-2: #EAE7DF;
+      --line: #E5E1D8;
+      --yellow: #E88A96;
+      --red: #E88A96;
+      --coral: #E88A96;
+      --blue: #3C3829;
+      --magenta: #E88A96;
+      --teal: #3C3829;
+      --day: var(--coral);
       --night: var(--blue);
-      --extra: var(--magenta);
-      --accent: var(--coral);
-      --radius: 8px;
-      --max: 720px;
+      --extra: #E88A96;
+      --side: 210px;
+      --gap: 52px;
+      --r-card: 18px;
+      --r-pill: 999px;
+      --r-soft: 14px;
+      --r-media: 16px;
+      --serif: "Instrument Serif", "Times New Roman", "Songti SC", serif;
+      --sans: "DM Sans", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
     }
+
+    /* Hide ugly scrollbars; still scrollable */
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
     * { box-sizing: border-box; }
     html { -webkit-font-smoothing: antialiased; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font-family: "DM Sans", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
     }
-    .wrap {
-      max-width: var(--max);
+
+    /* —— Two-column shell —— */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--side) minmax(0, 1fr);
+      gap: var(--gap);
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 52px 22px 120px;
+      padding: 40px 36px 96px;
+      align-items: start;
     }
 
-    header { margin-bottom: 40px; }
-    .brand {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .mark {
-      flex: 0 0 auto;
-      width: 34px;
-      height: 34px;
-      margin-top: 6px;
-      color: var(--coral);
-    }
-    header h1 {
-      font-family: Syne, "PingFang SC", "Noto Sans SC", sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.75rem, 4.5vw, 2.15rem);
-      letter-spacing: -0.035em;
-      line-height: 1.15;
-      margin: 0 0 8px;
-      color: var(--ink);
-    }
-    header .sub {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 400;
-    }
-    header .updated {
-      margin: 12px 0 0;
-      color: var(--faint);
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-    .accent-bar {
-      width: 48px;
-      height: 4px;
-      background: var(--coral);
-      border-radius: 2px;
-      margin-top: 22px;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
+    /* —— Sticky left sidebar: soft fills, no stroked panels —— */
+    .sidebar {
       position: sticky;
-      top: 0;
-      z-index: 8;
-      padding: 14px 0 12px;
-      margin: 0 0 4px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line-soft);
+      top: 28px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+      padding-right: 4px;
     }
-    .toolbar input {
-      flex: 1 1 160px;
-      min-width: 140px;
-      background: var(--surface);
-      border: 1px solid var(--line);
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin: 0 0 6px;
       color: var(--ink);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
     }
-    .toolbar input::placeholder { color: var(--faint); }
-    .toolbar input:focus { border-color: var(--ink); }
-    .toolbar button, .days button {
-      appearance: none;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 7px 13px;
-      font-size: 0.84rem;
-      font-family: inherit;
+    .logo em { font-style: italic; color: var(--red); }
+    .side-kicker {
+      margin: 0 0 22px;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
       font-weight: 500;
-      cursor: pointer;
-      transition: background .12s ease, color .12s ease, border-color .12s ease;
     }
-    .toolbar button:hover, .days button:hover {
-      border-color: var(--ink);
+    .side-label {
+      margin: 22px 0 10px;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 600;
+      /* space + type only — no rule */
+      border: none;
+      padding-top: 0;
+    }
+
+    .slot-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0 0 14px;
+    }
+    .slot-nav button {
+      appearance: none;
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-radius: var(--r-pill);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 500;
+      padding: 9px 14px;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background .12s ease, color .12s ease;
+    }
+    .slot-nav button:hover {
+      background: var(--soft);
       color: var(--ink);
     }
-    .toolbar button.active, .days button.active {
-      background: var(--ink);
-      color: #fff;
-      border-color: var(--ink);
+    .slot-nav button.active {
+      background: var(--yellow);
+      color: var(--ink);
+      font-weight: 700;
     }
-    .toolbar button[data-quality].active {
+    .slot-nav button[data-quality].active {
       background: var(--coral);
-      border-color: var(--coral);
       color: #fff;
+    }
+
+    .sidebar input#q {
+      width: 100%;
+      border: none;
+      background: var(--soft);
+      border-radius: var(--r-pill);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: var(--ink);
+      outline: none;
+      margin-bottom: 4px;
+    }
+    .sidebar input#q::placeholder { color: var(--faint); }
+    .sidebar input#q:focus {
+      background: var(--soft-2);
+      box-shadow: inset 0 0 0 2px rgba(10,10,10,0.06);
+    }
+
+    .day-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0 0 16px;
+    }
+    .day-nav button {
+      appearance: none;
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-radius: var(--r-pill);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background .12s ease, color .12s ease;
+    }
+    .day-nav button:hover {
+      background: var(--soft);
+      color: var(--ink);
+    }
+    .day-nav button.active {
+      background: var(--yellow);
+      color: var(--ink);
+      font-weight: 700;
     }
 
     .stats {
+      margin: 8px 0 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--faint);
-      font-size: 0.8rem;
-      margin: 8px 0 16px;
-      letter-spacing: 0.02em;
       font-weight: 500;
+      padding: 0 6px;
     }
-    .note {
-      border-left: 3px solid var(--coral);
-      padding: 4px 0 4px 14px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      margin-bottom: 28px;
-      line-height: 1.55;
+    #updated-line {
+      margin: 0;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 0 6px;
+    }
+
+    /* —— Main column —— */
+    .main-col { min-width: 0; }
+
+    .hero { margin-bottom: 32px; }
+    /* no red frame — type + whitespace only */
+    .hero-frame {
+      border: none;
+      padding: 8px 0 0;
+      border-radius: 0;
       background: transparent;
     }
-    .days {
+    .hero-lede {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.85rem, 3.6vw, 2.55rem);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 18em;
+    }
+    .hero-lede em {
+      font-style: italic;
+      font-weight: 400;
+    }
+    .hero-sub {
+      margin: 18px 0 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-sub::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: var(--r-pill);
+      background: var(--yellow);
+      flex: 0 0 auto;
+    }
+    /* small accent mark only — not a full-width bar */
+    .yellow-bar {
+      display: none;
+    }
+
+    .note {
+      margin: 0 0 40px;
+      padding: 14px 18px;
+      border: none;
+      border-radius: var(--r-soft);
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    /* —— Day blocks: space + type, no heavy rule —— */
+    .day-block { margin-bottom: 56px; }
+    .day-block h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.75rem, 3vw, 2.1rem);
+      letter-spacing: -0.02em;
+      margin: 0 0 22px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .day-block h2 span {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* —— Soft rounded cards: filled surface, no left bars —— */
+    .card {
+      position: relative;
+      background: var(--soft);
+      border: none;
+      border-radius: var(--r-card);
+      padding: 22px 22px 20px;
+      margin: 0 0 20px;
+      border-left: none;
+    }
+    .card.slot-day,
+    .card.slot-night,
+    .card.slot-extra { border-left: none; }
+    .card + .card { padding-top: 22px; }
+
+    .card-head {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 36px;
+      margin-bottom: 12px;
     }
-
-    .day-block { margin-bottom: 48px; }
-    .day-block h2 {
-      font-family: Syne, "PingFang SC", sans-serif;
+    .slot-chip, .quality-chip {
+      display: inline-block;
+      font-size: 0.65rem;
       font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: -0.03em;
-      margin: 0 0 16px;
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--line);
-    }
-    .day-block h2 span {
-      font-family: "DM Sans", sans-serif;
-      color: var(--faint);
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-    }
-
-    .card {
-      background: transparent;
+      padding: 5px 11px;
+      border-radius: var(--r-pill);
+      color: #fff;
+      font-family: var(--sans);
       border: none;
-      border-bottom: 1px solid var(--line-soft);
-      border-radius: 0;
-      padding: 20px 0 18px;
-      margin-bottom: 0;
-      border-left: 3px solid transparent;
-      padding-left: 14px;
-      margin-left: -1px;
-      transition: border-color .15s ease;
     }
-    .card:hover { border-left-color: var(--ink); }
-    .card.slot-day { border-left-color: var(--day); }
-    .card.slot-night { border-left-color: var(--night); }
-    .card.slot-extra { border-left-color: var(--extra); }
-    .card.slot-day:hover { border-left-color: var(--day); }
-    .card.slot-night:hover { border-left-color: var(--night); }
-    .card.slot-extra:hover { border-left-color: var(--extra); }
+    .slot-chip.day { background: var(--day); }
+    .slot-chip.night { background: var(--night); }
+    .slot-chip.extra { background: var(--magenta); }
+    .quality-chip.full { background: var(--coral); }
+    .quality-chip.thin {
+      background: #fff;
+      color: var(--faint);
+      border: none;
+      font-weight: 500;
+    }
 
-    .card-top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
     .card h3 {
       margin: 0;
-      font-family: Syne, "PingFang SC", sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.35;
-      flex: 1 1 220px;
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.2vw, 1.55rem);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1.28;
+      max-width: 28em;
     }
     .card h3 a {
       color: var(--ink);
       text-decoration: none;
     }
-    .card h3 a:hover { color: var(--coral); }
+    .card h3 a:hover { color: var(--red); }
+
     .meta {
-      color: var(--faint);
-      font-size: 0.75rem;
-      margin: 8px 0 0;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-    .badges { display: flex; flex-wrap: wrap; gap: 6px; }
-    .badge {
+      margin: 10px 0 0;
       font-size: 0.7rem;
-      padding: 3px 9px;
-      border-radius: 999px;
-      border: none;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      color: #fff;
-    }
-    .badge.day { background: var(--day); }
-    .badge.night { background: var(--night); }
-    .badge.extra { background: var(--extra); }
-    .badge.thin {
-      background: transparent;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--faint);
-      border: 1px solid var(--line);
       font-weight: 500;
     }
-    .badge.full { background: var(--coral); }
+
+    .dek {
+      margin: 14px 0 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--ink);
+      max-width: 40em;
+    }
+    .dek.pending {
+      color: var(--muted);
+      font-style: italic;
+    }
 
     .actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 14px;
+      margin-top: 16px;
     }
     .actions button, .actions a.btn {
       appearance: none;
-      border: 1px solid var(--line);
-      background: transparent;
+      border: none;
+      background: #fff;
       color: var(--ink);
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 0.84rem;
+      border-radius: var(--r-pill);
+      padding: 8px 16px;
+      font-size: 0.78rem;
       font-family: inherit;
       font-weight: 500;
       cursor: pointer;
       text-decoration: none;
-      transition: background .12s ease, color .12s ease, border-color .12s ease;
+      letter-spacing: 0.02em;
+      transition: background .12s ease, color .12s ease;
     }
     .actions button.primary {
-      background: var(--coral);
-      color: #fff;
-      border-color: var(--coral);
-    }
-    .actions button.primary:hover { filter: brightness(1.05); }
-    .actions a.btn:hover {
-      border-color: var(--ink);
       background: var(--ink);
       color: #fff;
+    }
+    .actions button.primary:hover {
+      background: var(--red);
+    }
+    .actions a.btn:hover {
+      background: var(--yellow);
     }
 
     .detail {
       display: none;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line-soft);
+      margin-top: 18px;
     }
     .detail.open { display: block; }
     .video {
@@ -303,10 +411,11 @@
       width: 100%;
       aspect-ratio: 16 / 9;
       min-height: 200px;
-      border-radius: var(--radius);
       overflow: hidden;
       background: #111;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
+      border: none;
+      border-radius: var(--r-media);
     }
     .video iframe {
       position: absolute;
@@ -316,15 +425,16 @@
       border: 0;
       display: block;
     }
-    .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); }
+    .detail p { margin: 0 0 10px; font-size: 0.95rem; color: var(--ink); line-height: 1.65; }
     .detail .label {
-      color: var(--coral);
-      font-size: 0.7rem;
-      margin-bottom: 4px;
-      letter-spacing: 0.08em;
+      color: var(--red);
+      font-size: 0.65rem;
+      margin: 14px 0 4px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 700;
     }
+    .detail .label:first-of-type { margin-top: 0; }
     .detail .pending {
       color: var(--muted);
       font-style: italic;
@@ -338,99 +448,143 @@
     }
     .expr li {
       font-size: 0.9rem;
-      margin-bottom: 6px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line-soft);
+      margin-bottom: 8px;
+      padding: 12px 16px;
+      border-bottom: none;
+      background: var(--soft);
+      border-radius: var(--r-soft);
     }
     .expr li:last-child { border-bottom: none; }
-    .expr li strong {
-      color: var(--coral);
-      font-weight: 700;
-    }
+    .expr li strong { color: var(--red); font-weight: 700; }
     .day-expr {
-      margin-top: 18px;
-      padding: 4px 0 0;
-      border: none;
-      border-top: 1px dashed var(--line);
-      padding-top: 16px;
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: none;
     }
     .day-expr h4 {
-      margin: 0 0 8px;
-      font-family: Syne, sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--ink);
+      margin: 0 0 12px;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 400;
+      font-style: italic;
     }
 
     footer {
       margin-top: 64px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      border-top: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
       color: var(--faint);
-      font-size: 0.84rem;
-      line-height: 1.55;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
     }
     footer strong {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
       color: var(--ink);
-      font-weight: 600;
+      font-weight: 400;
+      letter-spacing: 0;
     }
-    footer .dot {
+    footer .mark-sq {
       display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--coral);
+      width: 9px;
+      height: 9px;
+      border-radius: var(--r-pill);
+      background: var(--yellow);
       margin-right: 8px;
       vertical-align: middle;
     }
 
-    @media (max-width: 520px) {
-      .wrap { padding: 36px 16px 96px; }
-      header h1 { font-size: 1.55rem; }
-      .card { padding-left: 12px; }
+    @media (max-width: 800px) {
+      .shell {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 28px 18px 80px;
+      }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        border-bottom: none;
+        padding-bottom: 8px;
+      }
+      .slot-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .slot-nav button {
+        width: auto;
+        border: none;
+        background: var(--soft);
+        padding: 8px 14px;
+      }
+      .slot-nav button.active { background: var(--yellow); }
+      .day-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .day-nav button {
+        width: auto;
+        border: none;
+        background: var(--soft);
+        padding: 7px 12px;
+      }
+      .day-nav button.active { background: var(--yellow); }
+      .hero-frame { padding: 0; }
+      .hero-lede { font-size: 1.65rem; max-width: none; }
+      .card { margin-bottom: 16px; padding: 18px; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <svg class="mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <ellipse cx="18" cy="20" rx="12" ry="10" stroke="currentColor" stroke-width="1.6"/>
-          <ellipse cx="10" cy="14" rx="3.2" ry="4" stroke="currentColor" stroke-width="1.5"/>
-          <ellipse cx="26" cy="14" rx="3.2" ry="4" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="14.5" cy="19" r="1.4" fill="currentColor"/>
-          <circle cx="21.5" cy="19" r="1.4" fill="currentColor"/>
-          <path d="M16.2 23.2c1.2 1.1 2.4 1.1 3.6 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-        <div>
-          <h1>Victoria’s Listening Log</h1>
-          <p class="sub">daily English listening · curated by Lenny</p>
-          <p class="updated" id="updated-line"></p>
-          <div class="accent-bar" aria-hidden="true"></div>
-        </div>
-      </div>
-    </header>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Filters">
+      <div class="logo">V<em>W</em></div>
+      <p class="side-kicker">Listening Log</p>
 
-    <div class="toolbar">
-      <input id="q" type="search" placeholder="Search titles, channels, summaries…" autocomplete="off" />
-      <button type="button" data-slot="all" class="active">All</button>
-      <button type="button" data-slot="day">Day</button>
-      <button type="button" data-slot="night">Night</button>
-      <button type="button" data-slot="extra">Extra</button>
-      <button type="button" data-quality="full">Full summaries only</button>
+      <p class="side-label">Browse</p>
+      <nav class="slot-nav">
+        <button type="button" data-slot="all" class="active">All</button>
+        <button type="button" data-slot="day">Day</button>
+        <button type="button" data-slot="night">Night</button>
+        <button type="button" data-slot="extra">Extra</button>
+        <button type="button" data-quality="full">Full summaries</button>
+      </nav>
+
+      <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+
+      <p class="side-label">Dates</p>
+      <nav class="day-nav" id="day-nav"></nav>
+
+      <p class="stats" id="stats"></p>
+      <p id="updated-line"></p>
+    </aside>
+
+    <div class="main-col">
+      <header class="hero">
+        <div class="hero-frame">
+          <p class="hero-lede">Victoria’s <em>Listening</em> Log — English tech talks by <em>day</em>, podcasts by <em>night</em>.</p>
+          <p class="hero-sub">Curated by Lenny</p>
+        </div>
+      </header>
+
+      <p class="note">
+        Oct 29–30 have full Chinese summaries; earlier days are still catching up. Videos are expanded by default — collapse any you don’t need.
+      </p>
+
+      <main id="main"></main>
+
+      <footer>
+        <div><span class="mark-sq" aria-hidden="true"></span><strong>Listen clean. Watch sharp.</strong></div>
+        <div>Daily picks by Lenny · archive.json</div>
+      </footer>
     </div>
-    <p class="stats" id="stats"></p>
-    <div class="note">
-      Oct 29–30 have full Chinese summaries; earlier days are still catching up. Videos are expanded by default — collapse any you don’t need.
-    </div>
-    <div class="days" id="day-nav"></div>
-    <main id="main"></main>
-    <footer>
-      <span class="dot" aria-hidden="true"></span><strong>Listen clean. Watch sharp.</strong>
-      Daily picks by Lenny · archive.json
-    </footer>
   </div>
 
   <script>
@@ -503,9 +657,21 @@
       if (box) box.innerHTML = "";
     }
 
+
+    function summaryDek(item, thin) {
+      if (thin) return `<p class="dek pending">Summary still catching up — open the video meanwhile.</p>`;
+      const raw = String(item.summary || "").trim();
+      // Prefer first 1–2 sentences for the always-visible dek
+      let dek = raw;
+      const parts = raw.split(/(?<=[。！？.!?])\s*/);
+      if (parts.length > 2) dek = parts.slice(0, 2).join("");
+      return `<p class="dek">${escapeHtml(dek)}</p>`;
+    }
+
     function render() {
       dayNav.innerHTML = "";
       const allBtn = document.createElement("button");
+      allBtn.type = "button";
       allBtn.textContent = "All dates";
       allBtn.className = dayFilter === "all" ? "active" : "";
       allBtn.onclick = () => { dayFilter = "all"; render(); };
@@ -516,6 +682,7 @@
 
       DATA.days.forEach(day => {
         const btn = document.createElement("button");
+        btn.type = "button";
         btn.textContent = fmtDateShort(day.date);
         btn.className = dayFilter === day.date ? "active" : "";
         btn.onclick = () => { dayFilter = day.date; render(); };
@@ -539,41 +706,35 @@
           card.className = "card slot-" + (item.slot || "");
           card.dataset.id = item.id;
           const thin = item.summary_quality !== "full";
-          // Real Chinese summaries stay Chinese; thin/metadata-only get a short English note.
-          const summaryBody = thin
-            ? `<p class="pending">Summary still catching up — open the video meanwhile.</p>`
-            : `<p>${escapeHtml(item.summary || "")}</p>`;
           const whyBlock = (!thin && item.why)
             ? `<p class="label">Why watch</p><p>${escapeHtml(item.why)}</p>`
             : "";
           const diffBlock = (!thin && item.difficulty)
             ? `<p class="label">English level</p><p>${escapeHtml(item.difficulty)}</p>`
             : "";
+          const fullSummaryBlock = (!thin && item.summary)
+            ? `<p class="label">Summary</p><p>${escapeHtml(item.summary)}</p>`
+            : (thin ? `<p class="label">Summary</p><p class="pending">Summary still catching up — open the video meanwhile.</p>` : "");
           card.innerHTML = `
-            <div class="card-top">
-              <div>
-                <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
-                <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
-                  (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
-              </div>
-              <div class="badges">
-                <span class="badge ${item.slot}">${slotLabel[item.slot] || item.slot}</span>
-                <span class="badge ${thin ? "thin" : "full"}">${thin ? "Summary pending" : "Full summary"}</span>
-              </div>
+            <div class="card-head">
+              <span class="slot-chip ${item.slot}" aria-label="${slotLabel[item.slot] || item.slot}">${slotLabel[item.slot] || item.slot}</span>
+              <span class="quality-chip ${thin ? "thin" : "full"}">${thin ? "Pending" : "Full"}</span>
             </div>
+            <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
+            <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
+              (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
+            ${summaryDek(item, thin)}
             <div class="actions">
               <button type="button" class="primary" data-act="toggle">Collapse</button>
-              <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube</a>
+              <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube ↗</a>
             </div>
             <div class="detail open" id="d-${item.id}">
               <div class="video" data-vid="${escapeHtml(item.id)}"></div>
-              <p class="label">Summary</p>
-              ${summaryBody}
+              ${fullSummaryBlock}
               ${whyBlock}
               ${diffBlock}
             </div>`;
           block.appendChild(card);
-          // Mount embed immediately (default expanded)
           mountEmbed(card.querySelector(".video"));
         });
 
@@ -590,7 +751,7 @@
       });
 
       const total = DATA.days.reduce((n,d)=>n+d.items.length,0);
-      stats.textContent = `Showing ${shown} / ${total} · ${DATA.days.length} days`;
+      stats.textContent = `${shown} / ${total} · ${DATA.days.length} days`;
     }
 
     main.addEventListener("click", (e) => {
@@ -608,14 +769,14 @@
       }
     });
 
-    document.querySelectorAll(".toolbar button[data-slot]").forEach(b => {
+    document.querySelectorAll(".slot-nav button[data-slot]").forEach(b => {
       b.addEventListener("click", () => {
         slot = b.dataset.slot;
-        document.querySelectorAll(".toolbar button[data-slot]").forEach(x => x.classList.toggle("active", x === b));
+        document.querySelectorAll(".slot-nav button[data-slot]").forEach(x => x.classList.toggle("active", x === b));
         render();
       });
     });
-    document.querySelector(".toolbar button[data-quality]").addEventListener("click", (e) => {
+    document.querySelector(".slot-nav button[data-quality]").addEventListener("click", (e) => {
       onlyFull = !onlyFull;
       e.currentTarget.classList.toggle("active", onlyFull);
       render();
@@ -626,6 +787,7 @@
     });
 
     render();
+
   </script>
 </body>
 </html>
