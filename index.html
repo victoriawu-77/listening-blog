@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Victoria’s Listening Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Particle cream ground + charcoal type + distinct band accents */
+      --bg: #F2F0E6;
+      --ink: #171715;
+      --muted: #4E4C46;
+      --faint: #7A776C;
+      --soft: #FFFFFF;
+      --field: #D4CBB8;
+      --field-edge: #A89E8C;
+      --soft-2: #C9BFAC;
+      --line: #E4E0D2;
+      --expr-alt: #E7E1D2;
+      --bar: rgba(242, 240, 230, 0.92);
+      --yellow: #F7CC00; /* voltage gold — CTA and active */
+      --coral: #EF6B00;  /* burnt orange */
+      --red: #E10600;    /* ruby */
+      --lime: #C6F000;   /* bright yellow-green */
+      --teal: #128A45;   /* deep forest */
+      --blue: #1A4DFF;   /* royal blue */
+      --magenta: #C026D3; /* purple / magenta */
+      --day: var(--coral);
+      --night: var(--blue);
+      --extra: var(--magenta);
+      --gap: 52px;
+      --r-card: 18px;
+      --r-pill: 999px;
+      --r-soft: 14px;
+      --r-media: 16px;
+      --serif: "Lora", "Palatino Linotype", "Songti SC", serif;
+      --sans: "DM Sans", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+    }
+    html.theme-night {
+      --bg: #141311;
+      --ink: #F3F0E6;
+      --muted: #C4BEB2;
+      --faint: #A39B8E;
+      --soft: #1E1C18;
+      --field: #322F2A;
+      --field-edge: #A89E8C;
+      --soft-2: #34302A;
+      --line: #8A8276;
+      --expr-alt: #2A2722;
+      --bar: rgba(20, 19, 17, 0.92);
+    }
+
+    /* Hide ugly scrollbars; still scrollable */
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    * { box-sizing: border-box; }
+    html { -webkit-font-smoothing: antialiased; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      background: var(--bar);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 36px 20px;
+    }
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 12px 22px;
+      min-height: 104px;
+    }
+    .logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 3px;
+      margin: 0 8px 0 0;
+      padding: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+    .logo-ll {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 3.5rem;
+      letter-spacing: -0.08em;
+      line-height: 1;
+    }
+
+    .filter-row {
+      --control-h: 36px;
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      align-content: center;
+      gap: 8px 22px;
+      margin-top: 18px;
+    }
+    .filter-row > .slot-nav,
+    .filter-row > .date-control {
+      height: var(--control-h);
+      min-height: var(--control-h);
+      max-height: var(--control-h);
+      margin-top: 0;
+      margin-bottom: 0;
+      align-self: center;
+    }
+    .filter-row > .date-control { margin-left: auto; }
+    .slot-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0;
+      height: var(--control-h);
+      padding: 3px;
+      box-sizing: border-box;
+      background: #E3DCCE;
+      border: none;
+      border-radius: var(--r-pill);
+      box-shadow: none;
+    }
+    .slot-nav button {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+      border: none;
+      border-radius: var(--r-pill);
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 12px;
+    }
+    .slot-nav button svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+    .slot-nav button:hover { color: var(--ink); }
+    .slot-nav button.active {
+      background: #F4F1E8;
+      color: var(--ink);
+      font-weight: 600;
+      box-shadow: none;
+    }
+    .slot-nav button.active svg { color: #B8860B; }
+    html.theme-night .slot-nav {
+      background: #34312C;
+      border: none;
+      box-shadow: none;
+    }
+    html.theme-night .slot-nav button { color: #D4CFC4; }
+    html.theme-night .slot-nav button:hover { color: #F3F0E6; }
+    html.theme-night .slot-nav button.active {
+      background: #6E675C;
+      color: #F4F0E6;
+      box-shadow: none;
+    }
+    html.theme-night .slot-nav button.active svg { color: #E6C56A; }
+
+    .topbar input#q {
+      flex: 0 1 180px;
+      min-width: 0;
+      margin-left: auto;
+      width: 180px;
+      max-width: 180px;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      border-radius: 0;
+      padding: 6px 0 5px;
+      font-size: 0.84rem;
+      font-family: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+    .topbar input#q::placeholder { color: var(--faint); }
+    .topbar input#q:focus {
+      background: transparent;
+      border-bottom-color: var(--ink);
+    }
+
+    .date-control {
+      display: flex;
+      align-items: center;
+      align-self: center;
+      height: var(--control-h, 36px);
+      margin: 0 0 0 auto;
+      position: relative;
+    }
+    .date-toggle {
+      appearance: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      height: 100%;
+      min-height: 0;
+      margin: 0;
+      border: 1.5px solid var(--field-edge);
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: var(--r-pill);
+      padding: 0 14px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: none;
+    }
+    .date-toggle:hover { border-color: var(--ink); background: var(--soft); }
+    .date-control.is-set .date-toggle {
+      border-color: var(--yellow);
+      box-shadow: inset 0 0 0 1px var(--yellow);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .date-popover {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      z-index: 20;
+      width: 320px;
+      padding: 18px 18px 14px;
+      background: var(--soft);
+      color: var(--ink);
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(23, 23, 21, 0.1);
+    }
+    .date-popover[hidden] { display: none; }
+    .cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .cal-month {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.35rem;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .cal-nav {
+      appearance: none;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 1.7rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .cal-nav:hover { background: var(--bg); }
+    .cal-nav:disabled { color: var(--faint); cursor: default; background: transparent; }
+    .cal-week, .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+    }
+    .cal-week {
+      margin-bottom: 6px;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+    }
+    .cal-grid button {
+      appearance: none;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--faint);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: default;
+    }
+    .cal-grid button.is-live {
+      color: var(--ink);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .cal-grid button.is-live:hover { background: var(--bg); }
+    .cal-grid button.is-selected,
+    .cal-grid button.is-selected:hover {
+      background: var(--yellow);
+      color: #171715;
+    }
+    .cal-any {
+      appearance: none;
+      display: block;
+      margin: 12px auto 0;
+      padding: 6px 8px 2px;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+    .cal-any:hover { color: var(--ink); }
+
+    .shell {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 36px 96px;
+    }
+
+    /* —— Main column —— */
+    .main-col { min-width: 0; }
+
+    .hero {
+      margin-bottom: 56px;
+    }
+    .hero-frame {
+      border: none;
+      padding: 4px 0 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .hero-lede {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-optical-sizing: auto;
+      font-size: clamp(3.15rem, 6.2vw, 5.35rem);
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+      color: var(--ink);
+      max-width: 11em;
+    }
+    .hero-line {
+      margin: 14px 0 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-optical-sizing: auto;
+      font-size: clamp(1.7rem, 3.1vw, 2.55rem);
+      line-height: 1.16;
+      letter-spacing: -0.008em;
+      color: var(--ink);
+      max-width: none;
+      white-space: nowrap;
+    }
+
+    /* —— Day blocks: space + type, no heavy rule —— */
+    .day-block { margin-bottom: 80px; }
+    .day-block h2 {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-optical-sizing: auto;
+      font-size: clamp(2.4rem, 4.4vw, 3.55rem);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin: 0 0 28px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 0;
+      border-bottom: none;
+      cursor: pointer;
+      width: fit-content;
+      max-width: 100%;
+    }
+    .day-chev {
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      border-right: 3px solid var(--ink);
+      border-bottom: 3px solid var(--ink);
+      color: var(--ink);
+      transform: rotate(45deg);
+      opacity: 1;
+      flex: 0 0 auto;
+    }
+    .day-block.is-collapsed .day-chev { transform: rotate(-45deg); }
+    .day-block.is-collapsed { margin-bottom: 36px; }
+    .day-block.is-collapsed .day-body,
+    .day-block.is-collapsed h2 { margin-bottom: 0; }
+    .day-block.is-collapsed .day-body { display: none; }
+    .day-block h2 span {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* —— Soft rounded cards: filled surface, no left bars —— */
+    .card {
+      position: relative;
+      background: var(--soft);
+      border: none;
+      border-radius: 22px;
+      padding: 22px 24px 20px;
+      margin: 0 0 22px;
+      border-left: none;
+    }
+    .card.slot-day,
+    .card.slot-night,
+    .card.slot-extra { border-left: none; }
+
+    .card-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+    .slot-chip, .quality-chip {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      font-family: var(--sans);
+      border: none;
+    }
+    .slot-chip.day { color: var(--day); }
+    .slot-chip.night { color: #7EB6FF; }
+    .slot-chip.extra { color: var(--extra); }
+    html:not(.theme-night) .slot-chip.night { color: var(--night); }
+    .quality-chip.thin {
+      color: var(--faint);
+      background: none;
+      border: none;
+      font-weight: 600;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.65rem, 2.4vw, 2.15rem);
+      font-weight: 500;
+      font-optical-sizing: auto;
+      letter-spacing: -0.008em;
+      line-height: 1.22;
+    }
+    .card h3 a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .card h3 a:hover {
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--yellow);
+      text-underline-offset: 4px;
+    }
+
+    .meta {
+      margin: 10px 0 0;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 500;
+    }
+
+    .dek {
+      margin: 14px 0 0;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--ink);
+    }
+    .dek p { margin: 0 0 0.85em; }
+    .dek p:last-child { margin-bottom: 0; }
+    .dek.pending {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .actions button, .actions a.btn {
+      appearance: none;
+      border: none;
+      background: var(--soft);
+      color: var(--ink);
+      border-radius: var(--r-pill);
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: background .12s ease, color .12s ease;
+    }
+    .actions button.primary {
+      background: var(--yellow);
+      color: #171715;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 18px;
+    }
+    .actions button.primary:hover {
+      background: #171715;
+      color: var(--yellow);
+    }
+    .actions a.btn {
+      background: transparent;
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      padding: 9px 16px;
+    }
+    .actions a.btn:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .detail {
+      display: none;
+      margin-top: 18px;
+    }
+    .detail.open { display: block; }
+    .video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 200px;
+      overflow: hidden;
+      background: #111;
+      margin-bottom: 0;
+      border: none;
+      border-radius: var(--r-media);
+    }
+    .video iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .detail p { margin: 0 0 0.9em; font-size: 0.95rem; color: var(--ink); line-height: 1.75; }
+    .detail p:last-child { margin-bottom: 0; }
+    .dek ol.points,
+    .detail ol.points,
+    .note-panel ol.points {
+      margin: 0.2em 0 0.4em;
+      padding: 0 0 0 1.35em;
+      line-height: 1.75;
+    }
+    .dek ol.points li,
+    .detail ol.points li,
+    .note-panel ol.points li {
+      margin: 0 0 0.75em;
+      padding: 0;
+    }
+    .dek ol.points li:last-child,
+    .detail ol.points li:last-child,
+    .note-panel ol.points li:last-child { margin-bottom: 0; }
+    .detail .label {
+      display: block;
+      color: var(--muted);
+      background: none;
+      font-size: 0.72rem;
+      margin: 18px 0 6px;
+      padding: 0;
+      border-radius: 0;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .detail .label.why,
+    .detail .label.level { background: none; color: var(--muted); }
+    .detail .label:first-of-type { margin-top: 0; }
+    .detail-notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .note-panel {
+      background: var(--expr-alt);
+      border-radius: 16px;
+      padding: 16px 18px 15px;
+    }
+    html.theme-night .note-panel {
+      background: #2C2923;
+      box-shadow: inset 0 0 0 1px #6E675C;
+    }
+    .note-panel .label {
+      margin: 0 0 8px;
+      color: var(--faint);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+    }
+    .note-panel > p,
+    .note-panel > ol {
+      margin: 0 0 0.75em;
+    }
+    .note-panel > :last-child { margin-bottom: 0; }
+    .detail .pending {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    .expr {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+    }
+    .expr-card {
+      border: none;
+      border-radius: 16px;
+      padding: 16px 18px 15px;
+      background: var(--expr-alt);
+    }
+    .expr-card:nth-child(even) { background: #F3EEE4; }
+    html.theme-night .expr-card { background: #2C2923; }
+    html.theme-night .expr-card:nth-child(even) { background: #35312B; }
+    .expr-en {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.12rem;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+    .expr-zh {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .day-expr {
+      margin-top: 8px;
+      padding: 22px 24px 20px;
+      background: var(--soft);
+      border: none;
+      border-radius: 22px;
+    }
+    .day-expr h4 {
+      margin: 0 0 12px;
+      padding: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 2.4vw, 2rem);
+      font-weight: 500;
+      font-optical-sizing: auto;
+      font-style: italic;
+      letter-spacing: -0.008em;
+      line-height: 1.15;
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 8px;
+      border-top: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--faint);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+    footer strong {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    footer .mark-sq {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: var(--r-pill);
+      background: var(--yellow);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 800px) {
+      .topbar-inner { padding: 26px 18px 16px; }
+      .topbar-row { flex-wrap: nowrap; min-height: 88px; gap: 12px; }
+      .logo-ll { font-size: 2.85rem; }
+      .topbar input#q {
+        margin-left: auto;
+        flex: 0 1 148px;
+        width: 148px;
+        max-width: 42%;
+        min-width: 0;
+      }
+      .filter-row { margin-top: 14px; gap: 8px 10px; }
+      .slot-nav button { padding: 0 10px; gap: 5px; font-size: 0.82rem; }
+      .date-toggle { padding: 0 12px; font-size: 0.8rem; }
+      .date-control { margin-left: auto; }
+      .shell { padding: 28px 18px 80px; }
+      .hero { margin-bottom: 36px; }
+      .hero-frame { padding: 0; }
+      .hero-lede { font-size: 2.65rem; max-width: none; }
+      .hero-line { font-size: 1.45rem; max-width: none; white-space: normal; }
+      .day-block h2 { font-size: 2.15rem; }
+      .card { margin-bottom: 16px; padding: 18px; }
+      .day-expr { padding: 18px; }
+      .expr { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-row">
+        <div class="logo" aria-label="Listening Log"><span class="logo-ll">LL</span></div>
+        <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
+      <div class="filter-row">
+        <nav class="slot-nav" aria-label="Filters">
+          <button type="button" data-slot="day" role="tab"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3.2v2.2M12 18.6v2.2M3.2 12h2.2M18.6 12h2.2M5.8 5.8l1.6 1.6M16.6 16.6l1.6 1.6M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Day</button>
+          <button type="button" data-slot="night" role="tab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.2 3.6A7.6 7.6 0 1 0 20.4 14 6.2 6.2 0 0 1 15.2 3.6Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Night</button>
+        </nav>
+        <div class="date-control">
+          <button type="button" class="date-toggle" id="date-toggle" aria-expanded="false" aria-controls="date-popover">Pick a date</button>
+          <div class="date-popover" id="date-popover" hidden>
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">‹</button>
+              <div class="cal-month" id="cal-month"></div>
+              <button type="button" class="cal-nav" id="cal-next" aria-label="Next month">›</button>
+            </div>
+            <div class="cal-week" aria-hidden="true"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <button type="button" class="cal-any" id="date-any">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="shell">
+    <div class="main-col">
+      <header class="hero">
+        <div class="hero-frame">
+          <h1 class="hero-lede">Listening Log</h1>
+          <p class="hero-line">English tech talks by day, podcasts by night.</p>
+        </div>
+      </header>
+
+      <main id="main"></main>
+
+      <footer>
+        <div><span class="mark-sq" aria-hidden="true"></span><strong>Listen clean. Watch sharp.</strong></div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {"title": "Victoria 的科技英文视听博客", "updated": "2026-10-30", "source": "Lenny daily English listening routine + conversation summaries", "days": [{"date": "2026-10-30", "items": [{"id": "AnsXWH2_EBU", "url": "https://www.youtube.com/watch?v=AnsXWH2_EBU", "title": "How Anthropic Merges 30,000 Code Changes a Day - Manish Kapur, Sonar & Addy Osmani, Anthropic", "channel": "AI Engineer", "duration": "约 19 分钟", "published": "2026-10-28", "slot": "day", "summary": "Sonar 的 Manish Kapur 和 Anthropic 的 Addy Osmani 聊到，coding agent 提 PR 的速度已经远超人能 review 的速度。Anthropic 每天合并的改动从约 2,500 个涨到了 30,000 个。做法是让 Claude 先做第一轮 review，而且每条 review 都得附上真实的验证证据。核心观点：「写代码基本解决了，难的是有没有信心合并」，所以每个环节都需要独立、多层的验证。", "why": "agent 产出变多以后，人要怎么建立信任，这本身就是 Happycapy 要解决的产品设计问题。", "difficulty": "中等偏上。口音清楚，但 PR、sandbox、verification 这类工程术语比较密。", "expressions": [], "summary_quality": "full"}, {"id": "yj90StgN70w", "url": "https://www.youtube.com/watch?v=yj90StgN70w", "title": "Make your Figma design system agent-ready", "channel": "Figma", "duration": "约 8 分钟", "published": "2026-10-28", "slot": "day", "summary": "讲怎么让 Figma agent 生成的设计「像你自己的产品」。关键是给 agent 一套它看得懂的 design system：组件结构清晰、命名一致、文档完整，再补上专门写给 agent 的示例、规范和 skills。视频里还演示了让 agent 批量重命名图层。", "why": "短、实用，设计师看完就能直接用上。", "difficulty": "较低。官方教程的语速，设计词汇都熟。", "expressions": [], "summary_quality": "full"}, {"id": "iMsUcCYNKqY", "url": "https://www.youtube.com/watch?v=iMsUcCYNKqY", "title": "Why Sam Altman is against a single superintelligence", "channel": "Cheeky Pint", "duration": "约 53 分钟", "published": "2026-10-29", "slot": "night", "summary": "Stripe 联合创始人 John Collison 采访 Sam Altman。核心观点：① AI 找漏洞会越来越多，打补丁不够，更持久的是重写软件架构；② 沙盒锁不住超人级模型，路线是沙盒→监控（含 activation monitoring）→真正对齐；③ 反对单一超级智能，更看好 agent teams（不喜欢说 swarm）：多 agent 并行校验提升能力，也更接近社会多元制衡；④ OpenAI「数学周末」把新模型砸向 Navier–Stokes 等难题，agent teams 的 scaling 还刚起步，成本有望一年降到约 1/100；⑤ 基础科学发现该公开，同时要对科学家社区有体谅；⑥ 站在算力通缩一边，希望每吉瓦五年 TCO 从约 700 亿降到约 200 亿美元，并考虑用机器人建数据中心；⑦ 个人 agent（Dot、Muse、Grok Bot 等）还没到「Macintosh 时刻」，但会逐步取代网页表单和很多手机 App，真正护城河是品牌/履约/选品；⑧ 迭代部署是唯一靠谱路径；企业多数仍是 AI 用得不够；讨厌用 tokens 计价但客户要可预期；好模型要会科学发现，也要「好共事」——像会认真反驳却仍尊重你的资深同事。", "why": "「agent teams」与「agent 取代表单/App」和 Happycapy 的 agent-native computer 方向直接相关。", "difficulty": "中等。聊得比较放松，Sam 语速偏快，John 是爱尔兰口音。", "expressions": [], "summary_quality": "full"}, {"id": "EZcWEsMuLb4", "url": "https://www.youtube.com/watch?v=EZcWEsMuLb4", "title": "Taking on ServiceNow: Coding Agents for the Rest of Us with Serval Co-Founder and CEO Jake Stauch", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": "约 38 分钟", "published": "2026-10-29", "slot": "extra", "summary": "Serval 的 CEO Jake Stauch 讲他们怎么把 coding agent 交给企业 IT 团队，让不写代码的人也能搭东西，同时靠确定性的审批流程和审计记录管住权限。他的判断是 SaaS 不会崩，更可能迎来一轮整合；后台自动运行的 agent 在企业里目前还算 moonshot。", "why": "企业里「给非工程师用 agent + 审批审计」的产品形态可参考。", "difficulty": "中等。美式口音，语速平稳，商业词汇比较多。", "expressions": [], "summary_quality": "full"}], "expressions": [{"en": "first-pass review", "zh": "第一轮初审，之后还会有人复核"}, {"en": "dark software factory", "zh": "几乎不需要人在场、全自动运转的软件工厂；说法来自 lights-out factory（熄灯工厂）"}, {"en": "test-time compute", "zh": "模型在推理、回答问题时额外投入的算力"}, {"en": "system of record", "zh": "企业里作为权威数据来源的核心系统，比如 ServiceNow、Salesforce"}, {"en": "SaaS-pocalypse", "zh": "SaaS 和 apocalypse 拼成的词，指 AI 会让传统 SaaS 遭遇末日的说法"}], "day_assignment": "confirmed"}, {"date": "2026-10-29", "items": [{"id": "hnCoQ5wB-GU", "url": "https://www.youtube.com/watch?v=hnCoQ5wB-GU", "title": "I tested 4 AI agents on 9 real tasks. Here’s who won.", "channel": "How I AI", "duration": "约 35 分钟", "published": "2026-10-28", "slot": "day", "summary": "Claire Vo（How I AI）谈 personal-agent fatigue，横评 Grok Bot、ChatGPT Dot、Meta Muse、Claude Duet。用 9 个真实任务打分：回 Slack、修 Sentry bug、Figma 缩略图、收件箱、家庭小报、四年级物理题、买鞋、发布视频等；还用 computer use 让一个 agent 去操作这些 agent 再打分。", "why": "Happycapy 竞品实测，评测任务设计可参考。", "difficulty": "中等。", "expressions": [], "summary_quality": "full"}, {"id": "9v42ZOdiBJY", "url": "https://www.youtube.com/watch?v=9v42ZOdiBJY", "title": "Why OpenAI Is Racing to Make Computer Use Superhuman", "channel": "a16z", "duration": "约 44 分钟", "published": "2026-10-26", "slot": "day", "summary": "a16z 访谈 Ari Weinstein & James Sun：computer use 迎来 scaling moment；UI 成了 AI 用软件的通用接口；harness 与智能一样重要；要有 deterministic guardrails；无聊的企业场景反而是最好的机会；理想状态是 agent 在后台干活、反过来适应人。", "why": "agent-native computer 正是 Happycapy 的定位。", "difficulty": "中偏难。", "expressions": [], "summary_quality": "full"}, {"id": "4UmFfI8CWuA", "url": "https://www.youtube.com/watch?v=4UmFfI8CWuA", "title": "Inference Will Be $10TRN Market: What No One Sees | Software Investors are F***ed | Naveen Rao", "channel": "20VC with Harry Stebbings", "duration": "约 73 分钟", "published": "2026-10-24", "slot": "night", "summary": "20VC 访谈 Naveen Rao：能源是 AI 最大瓶颈；瓶颈正从「创造」转到「验证」；纯软件投资变难；他认为 20 年后 SaaS 的重要性会下降；推理是约 10 万亿美元市场；约 80% 的 token 可能跑在开源模型上。", "why": "「验证比生成更难」以及 SaaS 重要性下降，对产品价值落点有启发。", "difficulty": "偏难。", "expressions": [], "summary_quality": "full"}], "expressions": [{"en": "personal-agent fatigue", "zh": "个人 agent 用多了之后的疲惫感"}, {"en": "harness", "zh": "包住模型的脚手架/运行框架，决定 agent 能不能稳定干活"}, {"en": "deterministic guardrails", "zh": "确定性的护栏，不靠模型临场发挥来保证安全边界"}, {"en": "boring is opportunity", "zh": "无聊的企业场景反而是机会"}, {"en": "verification is the new bottleneck", "zh": "验证（而不是生成）才是新的瓶颈"}], "day_assignment": "confirmed"}, {"date": "2026-10-28", "items": [{"id": "ImnZ7s68jw8", "url": "https://www.youtube.com/watch?v=ImnZ7s68jw8", "title": "What Does an AI Engineer Do Now? - Aparna Dhinakaran, Arize AI", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：What Does an AI Engineer Do Now? - Aparna Dhinakaran, Arize AI（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "MRQTlwcW-aQ", "url": "https://www.youtube.com/watch?v=MRQTlwcW-aQ", "title": "How Anthropic ships the #1 LLM in the World — with Katelyn Lesse and Angela Jiang", "channel": "Latent Space", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Anthropic ships the #1 LLM in the World — with Katelyn Lesse and Angela Jiang（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "3Lc0xfW4r9Q", "url": "https://www.youtube.com/watch?v=3Lc0xfW4r9Q", "title": "Why United’s CEO thinks air traffic control is the problem", "channel": "Cheeky Pint", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Why United’s CEO thinks air traffic control is the problem（Cheeky Pint）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-27", "items": [{"id": "rFi9b5iQmqs", "url": "https://www.youtube.com/watch?v=rFi9b5iQmqs", "title": "A Spoiler-Filled Guide to 'You Can See Everything' | Hard Fork", "channel": "Hard Fork", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：A Spoiler-Filled Guide to 'You Can See Everything' | Hard Fork（Hard Fork）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "-r2_5LboWL8", "url": "https://www.youtube.com/watch?v=-r2_5LboWL8", "title": "Who Wins in the Next Decade of VC | Margin and Price Matter Less in a World of AI | Sameer Dholakia", "channel": "20VC with Harry Stebbings", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Who Wins in the Next Decade of VC | Margin and Price Matter Less in a World of AI | Sameer Dholakia（20VC with Harry Stebbings）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "eojywvxqoLc", "url": "https://www.youtube.com/watch?v=eojywvxqoLc", "title": "The New Full-Stack Designer", "channel": "Y Combinator", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The New Full-Stack Designer（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-26", "items": [{"id": "19qrLchbQEc", "url": "https://www.youtube.com/watch?v=19qrLchbQEc", "title": "An 86-minute guide to finding PMF | Rob Snyder (Author, The Power of Pull)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：An 86-minute guide to finding PMF | Rob Snyder (Author, The Power of Pull)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "frYSOKvNiiE", "url": "https://www.youtube.com/watch?v=frYSOKvNiiE", "title": "What will computer chips look like in 2045?", "channel": "Dwarkesh Patel", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：What will computer chips look like in 2045?（Dwarkesh Patel）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "zF-J3rMbzZw", "url": "https://www.youtube.com/watch?v=zF-J3rMbzZw", "title": "How Reddit’s designers build ultra-realistic prototypes with Figma + Cursor", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Reddit’s designers build ultra-realistic prototypes with Figma + Cursor（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "dChiPsd0uF4", "url": "https://www.youtube.com/watch?v=dChiPsd0uF4", "title": "Is Meta’s Muse Wonder model any good?", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Is Meta’s Muse Wonder model any good?（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-25", "items": [{"id": "kspZP5BgkEU", "url": "https://www.youtube.com/watch?v=kspZP5BgkEU", "title": "AI Writes the Code. So What's Left for Engineers? - Laurie Voss, Arize AI", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：AI Writes the Code. So What's Left for Engineers? - Laurie Voss, Arize AI（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "N6FkmdL0Lg0", "url": "https://www.youtube.com/watch?v=N6FkmdL0Lg0", "title": "How Factory is building autonomous software with Claude", "channel": "Claude", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Factory is building autonomous software with Claude（Claude）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "PST8yesYOSo", "url": "https://www.youtube.com/watch?v=PST8yesYOSo", "title": "The New Apex Predator: CrowdStrike CEO George Kurtz on Adversaries Armed With AI Agents", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The New Apex Predator: CrowdStrike CEO George Kurtz on Adversaries Armed With AI Agents（No Priors: AI, Machine Learning, Tech, & Startups）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "0idrTKCDhuE", "url": "https://www.youtube.com/watch?v=0idrTKCDhuE", "title": "Inside the Robot Data Factory: Mecka's Josh Gao on Sensorizing Humans to Train Robots", "channel": "Sequoia Capital", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside the Robot Data Factory: Mecka's Josh Gao on Sensorizing Humans to Train Robots（Sequoia Capital）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "0FQC0mu5Z00", "url": "https://www.youtube.com/watch?v=0FQC0mu5Z00", "title": "Kyle Barber - Designing Inflight (the raw behind-the-scenes)", "channel": "Dive Club 🤿", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Kyle Barber - Designing Inflight (the raw behind-the-scenes)（Dive Club 🤿）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "DWHyPWnzGAI", "url": "https://www.youtube.com/watch?v=DWHyPWnzGAI", "title": "The Recommendation Engine for Commodity Traders — Anekha Sokhal, Moshi", "channel": "Latent Space", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The Recommendation Engine for Commodity Traders — Anekha Sokhal, Moshi（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-24", "items": [{"id": "2Zj6uMv3kTA", "url": "https://www.youtube.com/watch?v=2Zj6uMv3kTA", "title": "Dylan Field: Is AI Replacing Designers?, Design is the New Code & Democratizing Creativity", "channel": "All-In Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Dylan Field: Is AI Replacing Designers?, Design is the New Code & Democratizing Creativity（All-In Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "2tZT2-pS_pI", "url": "https://www.youtube.com/watch?v=2tZT2-pS_pI", "title": "How To Stand Out In A World Of AI Designs", "channel": "Y Combinator", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How To Stand Out In A World Of AI Designs（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "c_SPW__jF9w", "url": "https://www.youtube.com/watch?v=c_SPW__jF9w", "title": "How to Test AI Agents When No Benchmark Exists — Nathanael Weill, Air Canada", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How to Test AI Agents When No Benchmark Exists — Nathanael Weill, Air Canada（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "LZbjIE2LeTQ", "url": "https://www.youtube.com/watch?v=LZbjIE2LeTQ", "title": "How to Actually Keep Your Company Ahead of AI", "channel": "Every", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How to Actually Keep Your Company Ahead of AI（Every）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "v12aSIZIXUs", "url": "https://www.youtube.com/watch?v=v12aSIZIXUs", "title": "This Is How You Should Actually Make Launch Videos", "channel": "Y Combinator", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：This Is How You Should Actually Make Launch Videos（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "oP2WLFpMoDY", "url": "https://www.youtube.com/watch?v=oP2WLFpMoDY", "title": "Inside Arca's Long-Horizon Agents That Run the Business - Aman Singh, Arca", "channel": "AI Engineer", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside Arca's Long-Horizon Agents That Run the Business - Aman Singh, Arca（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "6VprwfSc4Xk", "url": "https://www.youtube.com/watch?v=6VprwfSc4Xk", "title": "Democratizing Security for the Agentic Web with Cloudflare CTO Dane Knecht", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Democratizing Security for the Agentic Web with Cloudflare CTO Dane Knecht（No Priors: AI, Machine Learning, Tech, & Startups）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-23", "items": [{"id": "UF08V1XIUmw", "url": "https://www.youtube.com/watch?v=UF08V1XIUmw", "title": "Claude Code for creators: AI editing is here", "channel": "How I AI", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Claude Code for creators: AI editing is here（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "4TOLm1g-gCE", "url": "https://www.youtube.com/watch?v=4TOLm1g-gCE", "title": "Meta Muse: the AI agent people actually love", "channel": "How I AI", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Meta Muse: the AI agent people actually love（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "mFLcqTGpVyU", "url": "https://www.youtube.com/watch?v=mFLcqTGpVyU", "title": "How Toto Wolff built the most valuable team in F1", "channel": "Cheeky Pint", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Toto Wolff built the most valuable team in F1（Cheeky Pint）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "3I6QYkccd3o", "url": "https://www.youtube.com/watch?v=3I6QYkccd3o", "title": "Why every company now needs to think and operate like a lab team | Josh Woodward (VP Google Labs)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Why every company now needs to think and operate like a lab team | Josh Woodward (VP Google Labs)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "HYb5w4PfPZM", "url": "https://www.youtube.com/watch?v=HYb5w4PfPZM", "title": "I tested Claude Duet. Is it worth switching from Grok Bot?", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：I tested Claude Duet. Is it worth switching from Grok Bot?（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "Vki6cklFqxo", "url": "https://www.youtube.com/watch?v=Vki6cklFqxo", "title": "AI in NYC: How Tenex Builds an AI-Native Engineering Team — Alex Lieberman & CJ Hess", "channel": "Latent Space", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：AI in NYC: How Tenex Builds an AI-Native Engineering Team — Alex Lieberman & CJ Hess（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "JHo-aiePjoM", "url": "https://www.youtube.com/watch?v=JHo-aiePjoM", "title": "Inside the black box of AI: How AI models actually think | Emmanuel Ameisen (Anthropic)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside the black box of AI: How AI models actually think | Emmanuel Ameisen (Anthropic)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}]};
+
+    const main = document.getElementById("main");
+    const qInput = document.getElementById("q");
+    const dateToggle = document.getElementById("date-toggle");
+    const datePopover = document.getElementById("date-popover");
+    const calMonth = document.getElementById("cal-month");
+    const calGrid = document.getElementById("cal-grid");
+    const calPrev = document.getElementById("cal-prev");
+    const calNext = document.getElementById("cal-next");
+    const knownDates = DATA.days.map(d => d.date).sort();
+    const knownSet = new Set(knownDates);
+    let viewYear = 2026;
+    let viewMonth = 9;
+    const DAY_KEY = "victoria-listening-day-folds";
+    let slot = defaultSlot();
+    let dayFilter = "all";
+    let query = "";
+
+    const slotLabel = { day: "Day", night: "Night", extra: "Day" };
+    function effectiveSlot(item) {
+      return item && item.slot === "extra" ? "day" : (item && item.slot) || "";
+    }
+    function defaultSlot() {
+      const hour = new Date().getHours();
+      return hour >= 6 && hour < 18 ? "day" : "night";
+    }
+    function applyTheme() {
+      document.documentElement.classList.toggle("theme-night", slot === "night");
+    }
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    function fmtDateShort(d) {
+      const [y,m,dd] = d.split("-");
+      return `${MONTHS[Number(m)-1]} ${Number(dd)}`;
+    }
+
+    function fmtDateHeading(d) {
+      const [y,m,dd] = d.split("-");
+      return `${MONTHS[Number(m)-1]} ${Number(dd)}, ${y}`;
+    }
+
+    function matchItem(item, day) {
+      if (effectiveSlot(item) !== slot) return false;
+      if (dayFilter !== "all" && day.date !== dayFilter) return false;
+      if (query) {
+        const hay = [item.title, item.channel, item.summary, item.why, item.difficulty, day.date].join(" ").toLowerCase();
+        if (!hay.includes(query)) return false;
+      }
+      return true;
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    }
+
+    function formatDuration(d) {
+      if (d == null || d === "") return "duration TBD";
+      const s = String(d).trim();
+      const m = s.match(/^约\s*(\d+)\s*分钟$/);
+      if (m) return `~${m[1]} min`;
+      return s;
+    }
+
+    function embedSrc(id) {
+      return `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1`;
+    }
+
+    function iframeHtml(id) {
+      return `<iframe src="${embedSrc(id)}" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    }
+
+    function mountEmbed(box) {
+      if (!box || box.querySelector("iframe")) return;
+      const id = box.dataset.vid;
+      if (!id) return;
+      box.innerHTML = iframeHtml(id);
+    }
+
+    function clearEmbed(box) {
+      if (box) box.innerHTML = "";
+    }
+
+
+    const CIRCLED = /[\u2460-\u2473]/;
+
+    function stripEdgePunct(s) {
+      return String(s || "").trim().replace(/^[：:.\s]+/, "").replace(/[：:；;\s]+$/, "");
+    }
+
+    function splitEnumerated(text) {
+      const re = /(?:^|\s)(\d{1,2})[.、．)）]\s+/g;
+      const marks = [];
+      let m;
+      while ((m = re.exec(text))) {
+        const num = Number(m[1]);
+        if (num < 1 || num > 30) continue;
+        marks.push({ index: m.index + (m[0].startsWith(" ") || m[0].startsWith("\n") ? 1 : 0), len: m[0].length - (m[0].startsWith(" ") ? 1 : 0) });
+      }
+      if (marks.length < 2) return null;
+      const lead = stripEdgePunct(text.slice(0, marks[0].index));
+      const items = [];
+      for (let i = 0; i < marks.length; i++) {
+        const start = marks[i].index + marks[i].len;
+        const end = i + 1 < marks.length ? marks[i + 1].index : text.length;
+        const body = stripEdgePunct(text.slice(start, end));
+        if (body) items.push(body);
+      }
+      return items.length ? { lead, items } : null;
+    }
+
+    function splitCircled(text) {
+      if (!CIRCLED.test(text)) return null;
+      const chunks = text.split(/(?=[\u2460-\u2473])/);
+      let lead = "";
+      const items = [];
+      chunks.forEach(chunk => {
+        if (CIRCLED.test(chunk.charAt(0))) {
+          const body = stripEdgePunct(chunk.slice(1));
+          if (body) items.push(body);
+        } else {
+          lead = stripEdgePunct(chunk);
+        }
+      });
+      return items.length ? { lead, items } : null;
+    }
+
+    function splitSentences(text) {
+      const parts = text.split(/(?<=[。！？])/).map(s => s.trim()).filter(Boolean);
+      const paras = [];
+      parts.forEach(sentence => {
+        if (sentence.length > 140 && (sentence.match(/；/g) || []).length >= 2) {
+          sentence.split("；").map(s => s.trim()).filter(Boolean).forEach((bit, i, arr) => {
+            paras.push(i < arr.length - 1 ? bit + "；" : bit);
+          });
+        } else {
+          paras.push(sentence);
+        }
+      });
+      return paras;
+    }
+
+    function formatRich(raw) {
+      const text = String(raw || "").replace(/\s+/g, " ").trim();
+      if (!text) return "";
+      const listed = splitCircled(text) || splitEnumerated(text);
+      if (listed) {
+        let html = "";
+        if (listed.lead) html += `<p>${escapeHtml(listed.lead)}</p>`;
+        html += `<ol class="points">` + listed.items.map(item => `<li>${escapeHtml(item)}</li>`).join("") + `</ol>`;
+        return html;
+      }
+      const paras = splitSentences(text);
+      if (paras.length >= 3 || (text.length > 160 && paras.length > 1)) {
+        return paras.map(p => `<p>${escapeHtml(p)}</p>`).join("");
+      }
+      return `<p>${escapeHtml(text)}</p>`;
+    }
+
+    function summaryBlock(item, thin) {
+      if (thin) return `<p class="dek pending">Summary still catching up — open the video meanwhile.</p>`;
+      const html = formatRich(item.summary);
+      return html ? `<div class="dek">${html}</div>` : "";
+    }
+
+    function readClosedDays() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(DAY_KEY) || "{}");
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function writeClosedDays(map) {
+      try { localStorage.setItem(DAY_KEY, JSON.stringify(map)); } catch (e) {}
+    }
+
+    function syncDateLabel() {
+      const control = dateToggle.closest(".date-control");
+      if (dayFilter === "all") {
+        dateToggle.textContent = "Pick a date";
+        control.classList.remove("is-set");
+      } else {
+        dateToggle.textContent = fmtDateShort(dayFilter);
+        control.classList.add("is-set");
+      }
+    }
+
+    function render() {
+      applyTheme();
+      syncDateLabel();
+      main.innerHTML = "";
+      const closedDays = readClosedDays();
+
+      DATA.days.forEach(day => {
+        const items = day.items.filter(it => matchItem(it, day));
+        if (!items.length) return;
+
+        const closed = !!closedDays[day.date];
+        const block = document.createElement("section");
+        block.className = "day-block" + (closed ? " is-collapsed" : "");
+        block.id = "day-" + day.date;
+        const h2 = document.createElement("h2");
+        const approx = day.day_assignment && String(day.day_assignment).startsWith("approximate");
+        h2.innerHTML = `<span class="day-chev" aria-hidden="true"></span>` +
+          escapeHtml(fmtDateHeading(day.date)) +
+          (approx ? ` <span>Date approximate</span>` : "");
+        h2.tabIndex = 0;
+        h2.setAttribute("role", "button");
+        h2.setAttribute("aria-expanded", closed ? "false" : "true");
+        h2.setAttribute("aria-controls", "body-" + day.date);
+        block.appendChild(h2);
+        const body = document.createElement("div");
+        body.className = "day-body";
+        body.id = "body-" + day.date;
+        block.appendChild(body);
+
+        items.forEach(item => {
+          const card = document.createElement("article");
+          const shownSlot = effectiveSlot(item);
+          card.className = "card slot-" + shownSlot;
+          card.dataset.id = item.id;
+          const thin = item.summary_quality !== "full";
+          const whyBlock = (!thin && item.why)
+            ? `<aside class="note-panel"><p class="label why">Why watch</p>${formatRich(item.why)}</aside>`
+            : "";
+          const diffBlock = (!thin && item.difficulty)
+            ? `<aside class="note-panel"><p class="label level">English level</p>${formatRich(item.difficulty)}</aside>`
+            : "";
+          const notes = (whyBlock || diffBlock) ? `<div class="detail-notes">${whyBlock}${diffBlock}</div>` : "";
+          const pendingChip = thin ? `<span class="quality-chip thin">Pending</span>` : "";
+          card.innerHTML = `
+            <div class="card-head">
+              <span class="slot-chip ${shownSlot}" aria-label="${slotLabel[shownSlot] || shownSlot}">${slotLabel[shownSlot] || shownSlot}</span>
+              ${pendingChip}
+            </div>
+            <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
+            <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
+              (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
+            ${summaryBlock(item, thin)}
+            <div class="actions">
+              <button type="button" class="primary" data-act="toggle">Collapse</button>
+              <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube ↗</a>
+            </div>
+            <div class="detail open" id="d-${item.id}">
+              <div class="video" data-vid="${escapeHtml(item.id)}"></div>
+              ${notes}
+            </div>`;
+          body.appendChild(card);
+          mountEmbed(card.querySelector(".video"));
+        });
+
+        if (day.expressions && day.expressions.length && items.length) {
+          const ex = document.createElement("div");
+          ex.className = "day-expr";
+          ex.innerHTML = `<h4>Expressions</h4><div class="expr">` +
+            day.expressions.map(e => `<article class="expr-card"><p class="expr-en">${escapeHtml(e.en)}</p><p class="expr-zh">${escapeHtml(e.zh)}</p></article>`).join("") +
+            `</div>`;
+          body.appendChild(ex);
+        }
+
+        main.appendChild(block);
+      });
+
+    }
+
+    function toggleDay(heading) {
+      const block = heading.closest(".day-block");
+      const date = (block.id || "").replace(/^day-/, "");
+      const closed = !block.classList.contains("is-collapsed");
+      block.classList.toggle("is-collapsed", closed);
+      heading.setAttribute("aria-expanded", closed ? "false" : "true");
+      const map = readClosedDays();
+      if (closed) map[date] = true;
+      else delete map[date];
+      writeClosedDays(map);
+    }
+
+    main.addEventListener("click", (e) => {
+      const heading = e.target.closest(".day-block h2");
+      if (heading) {
+        toggleDay(heading);
+        return;
+      }
+      const btn = e.target.closest("button[data-act=toggle]");
+      if (!btn) return;
+      const card = btn.closest(".card");
+      const detail = card.querySelector(".detail");
+      const open = detail.classList.toggle("open");
+      btn.textContent = open ? "Collapse" : "Expand";
+      const box = detail.querySelector(".video");
+      if (open) {
+        mountEmbed(box);
+      } else {
+        clearEmbed(box);
+      }
+    });
+
+    document.querySelectorAll(".slot-nav button[data-slot]").forEach(b => {
+      b.classList.toggle("active", b.dataset.slot === slot);
+      b.addEventListener("click", () => {
+        slot = b.dataset.slot;
+        document.querySelectorAll(".slot-nav button[data-slot]").forEach(x => x.classList.toggle("active", x === b));
+        applyTheme();
+        render();
+      });
+    });
+    qInput.addEventListener("input", () => {
+      query = qInput.value.trim().toLowerCase();
+      render();
+    });
+
+    function monthIndex(iso) {
+      const [y, m] = iso.split("-").map(Number);
+      return y * 12 + (m - 1);
+    }
+    const minMonth = knownDates.length ? monthIndex(knownDates[0]) : 0;
+    const maxMonth = knownDates.length ? monthIndex(knownDates[knownDates.length - 1]) : 0;
+
+    function closePopover() {
+      datePopover.hidden = true;
+      dateToggle.setAttribute("aria-expanded", "false");
+    }
+
+    function renderCalendar() {
+      const label = new Date(viewYear, viewMonth, 1).toLocaleString("en-US", { month: "long", year: "numeric" });
+      calMonth.textContent = label;
+      const here = viewYear * 12 + viewMonth;
+      calPrev.disabled = here <= minMonth;
+      calNext.disabled = here >= maxMonth;
+      calGrid.innerHTML = "";
+      const firstDow = new Date(viewYear, viewMonth, 1).getDay();
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      for (let i = 0; i < firstDow; i++) calGrid.appendChild(document.createElement("span"));
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = String(d);
+        const live = knownSet.has(iso);
+        if (live) btn.classList.add("is-live");
+        if (dayFilter === iso) btn.classList.add("is-selected");
+        btn.disabled = !live;
+        if (live) {
+          btn.addEventListener("click", () => {
+            dayFilter = iso;
+            closePopover();
+            render();
+          });
+        }
+        calGrid.appendChild(btn);
+      }
+    }
+
+    function openPopover() {
+      const base = dayFilter !== "all" ? dayFilter : (knownDates[knownDates.length - 1] || "2026-10-01");
+      const [y, m] = base.split("-").map(Number);
+      viewYear = y;
+      viewMonth = m - 1;
+      datePopover.hidden = false;
+      dateToggle.setAttribute("aria-expanded", "true");
+      renderCalendar();
+    }
+
+    dateToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (datePopover.hidden) openPopover();
+      else closePopover();
+    });
+    calPrev.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (calPrev.disabled) return;
+      viewMonth -= 1;
+      if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+      renderCalendar();
+    });
+    calNext.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (calNext.disabled) return;
+      viewMonth += 1;
+      if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+      renderCalendar();
+    });
+    function resetDate() {
+      dayFilter = "all";
+      closePopover();
+      render();
+    }
+    document.getElementById("date-any").addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetDate();
+    });
+    document.addEventListener("click", (e) => {
+      if (!datePopover.hidden && !e.target.closest(".date-control")) closePopover();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closePopover();
+    });
+    main.addEventListener("keydown", (e) => {
+      const heading = e.target.closest(".day-block h2");
+      if (!heading) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDay(heading);
+      }
+    });
+
+    render();
+
+  </script>
+</body>
+</html>
