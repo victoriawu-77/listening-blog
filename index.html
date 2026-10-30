@@ -270,24 +270,20 @@
       color: var(--ink);
       max-width: 11em;
     }
-    .hero-lede em {
+    .hero-lede em,
+    .hero-line em {
       font-style: italic;
       font-weight: 400;
     }
-    /* small accent mark only — not a full-width bar */
-    .yellow-bar {
-      display: none;
-    }
-
-    .note {
-      margin: 0 0 56px;
-      padding: 14px 18px;
-      border: none;
-      border-radius: var(--r-soft);
-      background: var(--soft);
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.55;
+    .hero-line {
+      margin: 14px 0 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.1vw, 2.55rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      max-width: 16em;
     }
 
     /* —— Day blocks: space + type, no heavy rule —— */
@@ -577,6 +573,7 @@
       .hero { margin-bottom: 36px; }
       .hero-frame { padding: 0; }
       .hero-lede { font-size: 2.65rem; max-width: none; }
+      .hero-line { font-size: 1.45rem; max-width: none; }
       .day-block h2 { font-size: 2.15rem; }
       .card { margin-bottom: 16px; padding: 18px; }
     }
@@ -614,13 +611,10 @@
     <div class="main-col">
       <header class="hero">
         <div class="hero-frame">
-          <p class="hero-lede">Victoria’s <em>Listening</em> Log — English tech talks by <em>day</em>, podcasts by <em>night</em>.</p>
+          <h1 class="hero-lede">Victoria’s <em>Listening</em> Log</h1>
+          <p class="hero-line">English tech talks by <em>day</em>, podcasts by <em>night</em>.</p>
         </div>
       </header>
-
-      <p class="note">
-        Oct 29–30 have full Chinese summaries; earlier days are still catching up. Videos are expanded by default — collapse any you don’t need.
-      </p>
 
       <main id="main"></main>
 
