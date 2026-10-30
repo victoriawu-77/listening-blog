@@ -86,6 +86,13 @@
     }
     .logo em { color: var(--ink); }
 
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 22px;
+      margin-top: 12px;
+    }
     .slot-nav {
       display: flex;
       flex-direction: row;
@@ -93,10 +100,10 @@
       align-items: center;
       gap: 2px 18px;
       margin: 0;
-      flex: 1 1 auto;
     }
     .slot-nav button,
-    .day-nav button {
+    .date-toggle,
+    .date-reset {
       appearance: none;
       display: inline-block;
       width: auto;
@@ -112,13 +119,13 @@
     }
     .slot-nav button { font-size: 0.92rem; }
     .slot-nav button:hover,
-    .day-nav button:hover {
+    .date-toggle:hover,
+    .date-reset:hover {
       background: transparent;
       color: var(--ink);
     }
     .slot-nav button.active,
-    .slot-nav button[data-quality].active,
-    .day-nav button.active {
+    .slot-nav button[data-quality].active {
       background: transparent;
       color: var(--ink);
       font-weight: 600;
@@ -126,10 +133,10 @@
     }
 
     .topbar input#q {
-      flex: 0 1 160px;
+      flex: 0 1 180px;
       min-width: 120px;
       margin-left: auto;
-      width: 160px;
+      width: 180px;
       border: none;
       border-bottom: 1px solid var(--line);
       background: transparent;
@@ -146,16 +153,23 @@
       border-bottom-color: var(--ink);
     }
 
-    .day-nav {
+    .date-control {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
       align-items: center;
-      gap: 2px 16px;
-      margin: 8px 0 0;
-      padding-top: 6px;
+      gap: 14px;
+      margin-left: auto;
+      position: relative;
     }
-    .day-nav button { font-size: 0.82rem; }
+    .date-toggle { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--yellow); }
+    .date-reset { font-size: 0.82rem; }
+    .date-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+    }
 
     .shell {
       max-width: 1040px;
@@ -220,7 +234,24 @@
       gap: 14px;
       padding-bottom: 0;
       border-bottom: none;
+      cursor: pointer;
+      width: fit-content;
+      max-width: 100%;
     }
+    .day-chev {
+      width: 0.42em;
+      height: 0.42em;
+      border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor;
+      transform: translateY(-0.15em) rotate(45deg);
+      opacity: 0.4;
+      flex: 0 0 auto;
+    }
+    .day-block.is-collapsed .day-chev { transform: translateY(0.12em) rotate(-135deg); }
+    .day-block.is-collapsed { margin-bottom: 36px; }
+    .day-block.is-collapsed .day-body,
+    .day-block.is-collapsed h2 { margin-bottom: 0; }
+    .day-block.is-collapsed .day-body { display: none; }
     .day-block h2 span {
       font-family: var(--sans);
       font-size: 0.68rem;
@@ -493,6 +524,8 @@
       .topbar-inner { padding: 14px 18px 10px; }
       .topbar-row { gap: 8px 14px; }
       .topbar input#q { margin-left: 0; flex: 1 1 140px; }
+      .filter-row { margin-top: 8px; }
+      .date-control { margin-left: 0; }
       .shell { padding: 28px 18px 80px; }
       .hero { margin-bottom: 36px; }
       .hero-frame { padding: 0; }
@@ -509,6 +542,9 @@
     <div class="topbar-inner">
       <div class="topbar-row">
         <div class="logo">V<em>W</em></div>
+        <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
+      <div class="filter-row">
         <nav class="slot-nav" aria-label="Filters">
           <button type="button" data-slot="all" class="active">All</button>
           <button type="button" data-slot="day">Day</button>
@@ -516,9 +552,12 @@
           <button type="button" data-slot="extra">Extra</button>
           <button type="button" data-quality="full">Full summaries</button>
         </nav>
-        <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+        <div class="date-control">
+          <button type="button" class="date-toggle" id="date-toggle">All dates</button>
+          <button type="button" class="date-reset" id="date-reset" hidden>Clear</button>
+          <input class="date-input" id="date-input" type="date" aria-label="Choose a date" />
+        </div>
       </div>
-      <nav class="day-nav" id="day-nav" aria-label="Dates"></nav>
     </div>
   </header>
   <div class="shell">
@@ -542,8 +581,11 @@
     const DATA = {"title": "Victoria 的科技英文视听博客", "updated": "2026-10-30", "source": "Lenny daily English listening routine + conversation summaries", "days": [{"date": "2026-10-30", "items": [{"id": "AnsXWH2_EBU", "url": "https://www.youtube.com/watch?v=AnsXWH2_EBU", "title": "How Anthropic Merges 30,000 Code Changes a Day - Manish Kapur, Sonar & Addy Osmani, Anthropic", "channel": "AI Engineer", "duration": "约 19 分钟", "published": "2026-10-28", "slot": "day", "summary": "Sonar 的 Manish Kapur 和 Anthropic 的 Addy Osmani 聊到，coding agent 提 PR 的速度已经远超人能 review 的速度。Anthropic 每天合并的改动从约 2,500 个涨到了 30,000 个。做法是让 Claude 先做第一轮 review，而且每条 review 都得附上真实的验证证据。核心观点：「写代码基本解决了，难的是有没有信心合并」，所以每个环节都需要独立、多层的验证。", "why": "agent 产出变多以后，人要怎么建立信任，这本身就是 Happycapy 要解决的产品设计问题。", "difficulty": "中等偏上。口音清楚，但 PR、sandbox、verification 这类工程术语比较密。", "expressions": [], "summary_quality": "full"}, {"id": "yj90StgN70w", "url": "https://www.youtube.com/watch?v=yj90StgN70w", "title": "Make your Figma design system agent-ready", "channel": "Figma", "duration": "约 8 分钟", "published": "2026-10-28", "slot": "day", "summary": "讲怎么让 Figma agent 生成的设计「像你自己的产品」。关键是给 agent 一套它看得懂的 design system：组件结构清晰、命名一致、文档完整，再补上专门写给 agent 的示例、规范和 skills。视频里还演示了让 agent 批量重命名图层。", "why": "短、实用，设计师看完就能直接用上。", "difficulty": "较低。官方教程的语速，设计词汇都熟。", "expressions": [], "summary_quality": "full"}, {"id": "iMsUcCYNKqY", "url": "https://www.youtube.com/watch?v=iMsUcCYNKqY", "title": "Why Sam Altman is against a single superintelligence", "channel": "Cheeky Pint", "duration": "约 53 分钟", "published": "2026-10-29", "slot": "night", "summary": "Stripe 联合创始人 John Collison 采访 Sam Altman。核心观点：① AI 找漏洞会越来越多，打补丁不够，更持久的是重写软件架构；② 沙盒锁不住超人级模型，路线是沙盒→监控（含 activation monitoring）→真正对齐；③ 反对单一超级智能，更看好 agent teams（不喜欢说 swarm）：多 agent 并行校验提升能力，也更接近社会多元制衡；④ OpenAI「数学周末」把新模型砸向 Navier–Stokes 等难题，agent teams 的 scaling 还刚起步，成本有望一年降到约 1/100；⑤ 基础科学发现该公开，同时要对科学家社区有体谅；⑥ 站在算力通缩一边，希望每吉瓦五年 TCO 从约 700 亿降到约 200 亿美元，并考虑用机器人建数据中心；⑦ 个人 agent（Dot、Muse、Grok Bot 等）还没到「Macintosh 时刻」，但会逐步取代网页表单和很多手机 App，真正护城河是品牌/履约/选品；⑧ 迭代部署是唯一靠谱路径；企业多数仍是 AI 用得不够；讨厌用 tokens 计价但客户要可预期；好模型要会科学发现，也要「好共事」——像会认真反驳却仍尊重你的资深同事。", "why": "「agent teams」与「agent 取代表单/App」和 Happycapy 的 agent-native computer 方向直接相关。", "difficulty": "中等。聊得比较放松，Sam 语速偏快，John 是爱尔兰口音。", "expressions": [], "summary_quality": "full"}, {"id": "EZcWEsMuLb4", "url": "https://www.youtube.com/watch?v=EZcWEsMuLb4", "title": "Taking on ServiceNow: Coding Agents for the Rest of Us with Serval Co-Founder and CEO Jake Stauch", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": "约 38 分钟", "published": "2026-10-29", "slot": "extra", "summary": "Serval 的 CEO Jake Stauch 讲他们怎么把 coding agent 交给企业 IT 团队，让不写代码的人也能搭东西，同时靠确定性的审批流程和审计记录管住权限。他的判断是 SaaS 不会崩，更可能迎来一轮整合；后台自动运行的 agent 在企业里目前还算 moonshot。", "why": "企业里「给非工程师用 agent + 审批审计」的产品形态可参考。", "difficulty": "中等。美式口音，语速平稳，商业词汇比较多。", "expressions": [], "summary_quality": "full"}], "expressions": [{"en": "first-pass review", "zh": "第一轮初审，之后还会有人复核"}, {"en": "dark software factory", "zh": "几乎不需要人在场、全自动运转的软件工厂；说法来自 lights-out factory（熄灯工厂）"}, {"en": "test-time compute", "zh": "模型在推理、回答问题时额外投入的算力"}, {"en": "system of record", "zh": "企业里作为权威数据来源的核心系统，比如 ServiceNow、Salesforce"}, {"en": "SaaS-pocalypse", "zh": "SaaS 和 apocalypse 拼成的词，指 AI 会让传统 SaaS 遭遇末日的说法"}], "day_assignment": "confirmed"}, {"date": "2026-10-29", "items": [{"id": "hnCoQ5wB-GU", "url": "https://www.youtube.com/watch?v=hnCoQ5wB-GU", "title": "I tested 4 AI agents on 9 real tasks. Here’s who won.", "channel": "How I AI", "duration": "约 35 分钟", "published": "2026-10-28", "slot": "day", "summary": "Claire Vo（How I AI）谈 personal-agent fatigue，横评 Grok Bot、ChatGPT Dot、Meta Muse、Claude Duet。用 9 个真实任务打分：回 Slack、修 Sentry bug、Figma 缩略图、收件箱、家庭小报、四年级物理题、买鞋、发布视频等；还用 computer use 让一个 agent 去操作这些 agent 再打分。", "why": "Happycapy 竞品实测，评测任务设计可参考。", "difficulty": "中等。", "expressions": [], "summary_quality": "full"}, {"id": "9v42ZOdiBJY", "url": "https://www.youtube.com/watch?v=9v42ZOdiBJY", "title": "Why OpenAI Is Racing to Make Computer Use Superhuman", "channel": "a16z", "duration": "约 44 分钟", "published": "2026-10-26", "slot": "day", "summary": "a16z 访谈 Ari Weinstein & James Sun：computer use 迎来 scaling moment；UI 成了 AI 用软件的通用接口；harness 与智能一样重要；要有 deterministic guardrails；无聊的企业场景反而是最好的机会；理想状态是 agent 在后台干活、反过来适应人。", "why": "agent-native computer 正是 Happycapy 的定位。", "difficulty": "中偏难。", "expressions": [], "summary_quality": "full"}, {"id": "4UmFfI8CWuA", "url": "https://www.youtube.com/watch?v=4UmFfI8CWuA", "title": "Inference Will Be $10TRN Market: What No One Sees | Software Investors are F***ed | Naveen Rao", "channel": "20VC with Harry Stebbings", "duration": "约 73 分钟", "published": "2026-10-24", "slot": "night", "summary": "20VC 访谈 Naveen Rao：能源是 AI 最大瓶颈；瓶颈正从「创造」转到「验证」；纯软件投资变难；他认为 20 年后 SaaS 的重要性会下降；推理是约 10 万亿美元市场；约 80% 的 token 可能跑在开源模型上。", "why": "「验证比生成更难」以及 SaaS 重要性下降，对产品价值落点有启发。", "difficulty": "偏难。", "expressions": [], "summary_quality": "full"}], "expressions": [{"en": "personal-agent fatigue", "zh": "个人 agent 用多了之后的疲惫感"}, {"en": "harness", "zh": "包住模型的脚手架/运行框架，决定 agent 能不能稳定干活"}, {"en": "deterministic guardrails", "zh": "确定性的护栏，不靠模型临场发挥来保证安全边界"}, {"en": "boring is opportunity", "zh": "无聊的企业场景反而是机会"}, {"en": "verification is the new bottleneck", "zh": "验证（而不是生成）才是新的瓶颈"}], "day_assignment": "confirmed"}, {"date": "2026-10-28", "items": [{"id": "ImnZ7s68jw8", "url": "https://www.youtube.com/watch?v=ImnZ7s68jw8", "title": "What Does an AI Engineer Do Now? - Aparna Dhinakaran, Arize AI", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：What Does an AI Engineer Do Now? - Aparna Dhinakaran, Arize AI（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "MRQTlwcW-aQ", "url": "https://www.youtube.com/watch?v=MRQTlwcW-aQ", "title": "How Anthropic ships the #1 LLM in the World — with Katelyn Lesse and Angela Jiang", "channel": "Latent Space", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Anthropic ships the #1 LLM in the World — with Katelyn Lesse and Angela Jiang（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "3Lc0xfW4r9Q", "url": "https://www.youtube.com/watch?v=3Lc0xfW4r9Q", "title": "Why United’s CEO thinks air traffic control is the problem", "channel": "Cheeky Pint", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Why United’s CEO thinks air traffic control is the problem（Cheeky Pint）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-27", "items": [{"id": "rFi9b5iQmqs", "url": "https://www.youtube.com/watch?v=rFi9b5iQmqs", "title": "A Spoiler-Filled Guide to 'You Can See Everything' | Hard Fork", "channel": "Hard Fork", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：A Spoiler-Filled Guide to 'You Can See Everything' | Hard Fork（Hard Fork）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "-r2_5LboWL8", "url": "https://www.youtube.com/watch?v=-r2_5LboWL8", "title": "Who Wins in the Next Decade of VC | Margin and Price Matter Less in a World of AI | Sameer Dholakia", "channel": "20VC with Harry Stebbings", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Who Wins in the Next Decade of VC | Margin and Price Matter Less in a World of AI | Sameer Dholakia（20VC with Harry Stebbings）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "eojywvxqoLc", "url": "https://www.youtube.com/watch?v=eojywvxqoLc", "title": "The New Full-Stack Designer", "channel": "Y Combinator", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The New Full-Stack Designer（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-26", "items": [{"id": "19qrLchbQEc", "url": "https://www.youtube.com/watch?v=19qrLchbQEc", "title": "An 86-minute guide to finding PMF | Rob Snyder (Author, The Power of Pull)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：An 86-minute guide to finding PMF | Rob Snyder (Author, The Power of Pull)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "frYSOKvNiiE", "url": "https://www.youtube.com/watch?v=frYSOKvNiiE", "title": "What will computer chips look like in 2045?", "channel": "Dwarkesh Patel", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：What will computer chips look like in 2045?（Dwarkesh Patel）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "zF-J3rMbzZw", "url": "https://www.youtube.com/watch?v=zF-J3rMbzZw", "title": "How Reddit’s designers build ultra-realistic prototypes with Figma + Cursor", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Reddit’s designers build ultra-realistic prototypes with Figma + Cursor（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "dChiPsd0uF4", "url": "https://www.youtube.com/watch?v=dChiPsd0uF4", "title": "Is Meta’s Muse Wonder model any good?", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Is Meta’s Muse Wonder model any good?（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-25", "items": [{"id": "kspZP5BgkEU", "url": "https://www.youtube.com/watch?v=kspZP5BgkEU", "title": "AI Writes the Code. So What's Left for Engineers? - Laurie Voss, Arize AI", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：AI Writes the Code. So What's Left for Engineers? - Laurie Voss, Arize AI（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "N6FkmdL0Lg0", "url": "https://www.youtube.com/watch?v=N6FkmdL0Lg0", "title": "How Factory is building autonomous software with Claude", "channel": "Claude", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Factory is building autonomous software with Claude（Claude）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "PST8yesYOSo", "url": "https://www.youtube.com/watch?v=PST8yesYOSo", "title": "The New Apex Predator: CrowdStrike CEO George Kurtz on Adversaries Armed With AI Agents", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The New Apex Predator: CrowdStrike CEO George Kurtz on Adversaries Armed With AI Agents（No Priors: AI, Machine Learning, Tech, & Startups）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "0idrTKCDhuE", "url": "https://www.youtube.com/watch?v=0idrTKCDhuE", "title": "Inside the Robot Data Factory: Mecka's Josh Gao on Sensorizing Humans to Train Robots", "channel": "Sequoia Capital", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside the Robot Data Factory: Mecka's Josh Gao on Sensorizing Humans to Train Robots（Sequoia Capital）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "0FQC0mu5Z00", "url": "https://www.youtube.com/watch?v=0FQC0mu5Z00", "title": "Kyle Barber - Designing Inflight (the raw behind-the-scenes)", "channel": "Dive Club 🤿", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Kyle Barber - Designing Inflight (the raw behind-the-scenes)（Dive Club 🤿）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "DWHyPWnzGAI", "url": "https://www.youtube.com/watch?v=DWHyPWnzGAI", "title": "The Recommendation Engine for Commodity Traders — Anekha Sokhal, Moshi", "channel": "Latent Space", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：The Recommendation Engine for Commodity Traders — Anekha Sokhal, Moshi（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-24", "items": [{"id": "2Zj6uMv3kTA", "url": "https://www.youtube.com/watch?v=2Zj6uMv3kTA", "title": "Dylan Field: Is AI Replacing Designers?, Design is the New Code & Democratizing Creativity", "channel": "All-In Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Dylan Field: Is AI Replacing Designers?, Design is the New Code & Democratizing Creativity（All-In Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "2tZT2-pS_pI", "url": "https://www.youtube.com/watch?v=2tZT2-pS_pI", "title": "How To Stand Out In A World Of AI Designs", "channel": "Y Combinator", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How To Stand Out In A World Of AI Designs（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "c_SPW__jF9w", "url": "https://www.youtube.com/watch?v=c_SPW__jF9w", "title": "How to Test AI Agents When No Benchmark Exists — Nathanael Weill, Air Canada", "channel": "AI Engineer", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How to Test AI Agents When No Benchmark Exists — Nathanael Weill, Air Canada（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "LZbjIE2LeTQ", "url": "https://www.youtube.com/watch?v=LZbjIE2LeTQ", "title": "How to Actually Keep Your Company Ahead of AI", "channel": "Every", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How to Actually Keep Your Company Ahead of AI（Every）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "v12aSIZIXUs", "url": "https://www.youtube.com/watch?v=v12aSIZIXUs", "title": "This Is How You Should Actually Make Launch Videos", "channel": "Y Combinator", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：This Is How You Should Actually Make Launch Videos（Y Combinator）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "oP2WLFpMoDY", "url": "https://www.youtube.com/watch?v=oP2WLFpMoDY", "title": "Inside Arca's Long-Horizon Agents That Run the Business - Aman Singh, Arca", "channel": "AI Engineer", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside Arca's Long-Horizon Agents That Run the Business - Aman Singh, Arca（AI Engineer）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "6VprwfSc4Xk", "url": "https://www.youtube.com/watch?v=6VprwfSc4Xk", "title": "Democratizing Security for the Agentic Web with Cloudflare CTO Dane Knecht", "channel": "No Priors: AI, Machine Learning, Tech, & Startups", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Democratizing Security for the Agentic Web with Cloudflare CTO Dane Knecht（No Priors: AI, Machine Learning, Tech, & Startups）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}, {"date": "2026-10-23", "items": [{"id": "UF08V1XIUmw", "url": "https://www.youtube.com/watch?v=UF08V1XIUmw", "title": "Claude Code for creators: AI editing is here", "channel": "How I AI", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Claude Code for creators: AI editing is here（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "4TOLm1g-gCE", "url": "https://www.youtube.com/watch?v=4TOLm1g-gCE", "title": "Meta Muse: the AI agent people actually love", "channel": "How I AI", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Meta Muse: the AI agent people actually love（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "mFLcqTGpVyU", "url": "https://www.youtube.com/watch?v=mFLcqTGpVyU", "title": "How Toto Wolff built the most valuable team in F1", "channel": "Cheeky Pint", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：How Toto Wolff built the most valuable team in F1（Cheeky Pint）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "3I6QYkccd3o", "url": "https://www.youtube.com/watch?v=3I6QYkccd3o", "title": "Why every company now needs to think and operate like a lab team | Josh Woodward (VP Google Labs)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "day", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Why every company now needs to think and operate like a lab team | Josh Woodward (VP Google Labs)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "HYb5w4PfPZM", "url": "https://www.youtube.com/watch?v=HYb5w4PfPZM", "title": "I tested Claude Duet. Is it worth switching from Grok Bot?", "channel": "How I AI", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：I tested Claude Duet. Is it worth switching from Grok Bot?（How I AI）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "Vki6cklFqxo", "url": "https://www.youtube.com/watch?v=Vki6cklFqxo", "title": "AI in NYC: How Tenex Builds an AI-Native Engineering Team — Alex Lieberman & CJ Hess", "channel": "Latent Space", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：AI in NYC: How Tenex Builds an AI-Native Engineering Team — Alex Lieberman & CJ Hess（Latent Space）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}, {"id": "JHo-aiePjoM", "url": "https://www.youtube.com/watch?v=JHo-aiePjoM", "title": "Inside the black box of AI: How AI models actually think | Emmanuel Ameisen (Anthropic)", "channel": "Lenny's Podcast", "duration": null, "published": null, "slot": "night", "summary": "完整中文摘要未从会话归档（当时已推送给 Victoria，但本机未另存全文）。可根据标题与频道自行回看：Inside the black box of AI: How AI models actually think | Emmanuel Ameisen (Anthropic)（Lenny's Podcast）。", "why": "", "difficulty": "", "expressions": [], "summary_quality": "metadata-only"}], "expressions": [], "day_assignment": "approximate_from_recommended_order"}]};
 
     const main = document.getElementById("main");
-    const dayNav = document.getElementById("day-nav");
     const qInput = document.getElementById("q");
+    const dateToggle = document.getElementById("date-toggle");
+    const dateReset = document.getElementById("date-reset");
+    const dateInput = document.getElementById("date-input");
+    const DAY_KEY = "victoria-listening-day-folds";
     let slot = "all";
     let onlyFull = false;
     let dayFilter = "all";
@@ -692,36 +734,58 @@
       return `<p class="dek">${escapeHtml(dek)}</p>`;
     }
 
-    function render() {
-      dayNav.innerHTML = "";
-      const allBtn = document.createElement("button");
-      allBtn.type = "button";
-      allBtn.textContent = "All dates";
-      allBtn.className = dayFilter === "all" ? "active" : "";
-      allBtn.onclick = () => { dayFilter = "all"; render(); };
-      dayNav.appendChild(allBtn);
+    function readClosedDays() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(DAY_KEY) || "{}");
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
 
+    function writeClosedDays(map) {
+      try { localStorage.setItem(DAY_KEY, JSON.stringify(map)); } catch (e) {}
+    }
+
+    function syncDateLabel() {
+      if (dayFilter === "all") {
+        dateToggle.textContent = "All dates";
+        dateReset.hidden = true;
+        dateInput.value = "";
+      } else {
+        dateToggle.textContent = fmtDateHeading(dayFilter);
+        dateReset.hidden = false;
+        dateInput.value = dayFilter;
+      }
+    }
+
+    function render() {
+      syncDateLabel();
       main.innerHTML = "";
+      const closedDays = readClosedDays();
 
       DATA.days.forEach(day => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = fmtDateShort(day.date);
-        btn.className = dayFilter === day.date ? "active" : "";
-        btn.onclick = () => { dayFilter = day.date; render(); };
-        dayNav.appendChild(btn);
-
         const items = day.items.filter(it => matchItem(it, day));
         if (!items.length) return;
 
+        const closed = !!closedDays[day.date];
         const block = document.createElement("section");
-        block.className = "day-block";
+        block.className = "day-block" + (closed ? " is-collapsed" : "");
         block.id = "day-" + day.date;
         const h2 = document.createElement("h2");
         const approx = day.day_assignment && String(day.day_assignment).startsWith("approximate");
         h2.innerHTML = escapeHtml(fmtDateHeading(day.date)) +
-          (approx ? ` <span>Date approximate</span>` : "");
+          (approx ? ` <span>Date approximate</span>` : "") +
+          `<span class="day-chev" aria-hidden="true"></span>`;
+        h2.tabIndex = 0;
+        h2.setAttribute("role", "button");
+        h2.setAttribute("aria-expanded", closed ? "false" : "true");
+        h2.setAttribute("aria-controls", "body-" + day.date);
         block.appendChild(h2);
+        const body = document.createElement("div");
+        body.className = "day-body";
+        body.id = "body-" + day.date;
+        block.appendChild(body);
 
         items.forEach(item => {
           const card = document.createElement("article");
@@ -756,7 +820,7 @@
               ${whyBlock}
               ${diffBlock}
             </div>`;
-          block.appendChild(card);
+          body.appendChild(card);
           mountEmbed(card.querySelector(".video"));
         });
 
@@ -766,7 +830,7 @@
           ex.innerHTML = `<h4>Expressions</h4><div class="expr">` +
             day.expressions.map(e => `<article class="expr-card"><p class="expr-en">${escapeHtml(e.en)}</p><p class="expr-zh">${escapeHtml(e.zh)}</p></article>`).join("") +
             `</div>`;
-          block.appendChild(ex);
+          body.appendChild(ex);
         }
 
         main.appendChild(block);
@@ -774,7 +838,24 @@
 
     }
 
+    function toggleDay(heading) {
+      const block = heading.closest(".day-block");
+      const date = (block.id || "").replace(/^day-/, "");
+      const closed = !block.classList.contains("is-collapsed");
+      block.classList.toggle("is-collapsed", closed);
+      heading.setAttribute("aria-expanded", closed ? "false" : "true");
+      const map = readClosedDays();
+      if (closed) map[date] = true;
+      else delete map[date];
+      writeClosedDays(map);
+    }
+
     main.addEventListener("click", (e) => {
+      const heading = e.target.closest(".day-block h2");
+      if (heading) {
+        toggleDay(heading);
+        return;
+      }
       const btn = e.target.closest("button[data-act=toggle]");
       if (!btn) return;
       const card = btn.closest(".card");
@@ -804,6 +885,34 @@
     qInput.addEventListener("input", () => {
       query = qInput.value.trim().toLowerCase();
       render();
+    });
+
+    const knownDates = DATA.days.map(d => d.date).sort();
+    if (knownDates.length) {
+      dateInput.min = knownDates[0];
+      dateInput.max = knownDates[knownDates.length - 1];
+    }
+    dateToggle.addEventListener("click", () => {
+      if (typeof dateInput.showPicker === "function") {
+        try { dateInput.showPicker(); return; } catch (e) {}
+      }
+      dateInput.focus();
+    });
+    dateInput.addEventListener("change", () => {
+      dayFilter = dateInput.value || "all";
+      render();
+    });
+    dateReset.addEventListener("click", () => {
+      dayFilter = "all";
+      render();
+    });
+    main.addEventListener("keydown", (e) => {
+      const heading = e.target.closest(".day-block h2");
+      if (!heading) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDay(heading);
+      }
     });
 
     render();
