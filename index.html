@@ -43,13 +43,13 @@
       --bg: #141311;
       --ink: #F3F0E6;
       --muted: #C4BEB2;
-      --faint: #8C867A;
+      --faint: #A39B8E;
       --soft: #1E1C18;
-      --field: #2A2722;
-      --field-edge: #4A453C;
+      --field: #322F2A;
+      --field-edge: #A89E8C;
       --soft-2: #34302A;
-      --line: #3C3830;
-      --expr-alt: #26231E;
+      --line: #8A8276;
+      --expr-alt: #2A2722;
       --bar: rgba(20, 19, 17, 0.92);
     }
 
@@ -118,8 +118,10 @@
       gap: 4px;
       margin: 0;
       padding: 4px;
-      background: var(--field);
+      background: #E3DCCE;
+      border: none;
       border-radius: var(--r-pill);
+      box-shadow: none;
     }
     .slot-nav button {
       appearance: none;
@@ -144,17 +146,25 @@
     }
     .slot-nav button:hover { color: var(--ink); }
     .slot-nav button.active {
-      background: var(--soft);
+      background: #F4F1E8;
       color: var(--ink);
       font-weight: 600;
-      box-shadow: 0 1px 2px rgba(23, 23, 21, 0.08);
-    }
-    .slot-nav button.active svg { color: #B8860B; }
-    html.theme-night .slot-nav button.active {
-      background: #2C291F;
       box-shadow: none;
     }
-    html.theme-night .slot-nav button.active svg { color: var(--yellow); }
+    .slot-nav button.active svg { color: #B8860B; }
+    html.theme-night .slot-nav {
+      background: #34312C;
+      border: none;
+      box-shadow: none;
+    }
+    html.theme-night .slot-nav button { color: #D4CFC4; }
+    html.theme-night .slot-nav button:hover { color: #F3F0E6; }
+    html.theme-night .slot-nav button.active {
+      background: #6E675C;
+      color: #F4F0E6;
+      box-shadow: none;
+    }
+    html.theme-night .slot-nav button.active svg { color: #E6C56A; }
 
     .topbar input#q {
       flex: 0 1 180px;
@@ -278,7 +288,7 @@
     .cal-grid button.is-selected,
     .cal-grid button.is-selected:hover {
       background: var(--yellow);
-      color: var(--ink);
+      color: #171715;
     }
     .cal-any {
       appearance: none;
@@ -415,9 +425,9 @@
       border: none;
     }
     .slot-chip.day { color: var(--day); }
-    .slot-chip.night { color: var(--night); }
+    .slot-chip.night { color: #7EB6FF; }
     .slot-chip.extra { color: var(--extra); }
-    .quality-chip.full { color: var(--teal); }
+    html:not(.theme-night) .slot-chip.night { color: var(--night); }
     .quality-chip.thin {
       color: var(--faint);
       background: none;
@@ -433,7 +443,6 @@
       font-optical-sizing: auto;
       letter-spacing: -0.008em;
       line-height: 1.22;
-      max-width: 22em;
     }
     .card h3 a {
       color: var(--ink);
@@ -460,8 +469,9 @@
       font-size: 0.95rem;
       line-height: 1.75;
       color: var(--ink);
-      max-width: 40em;
     }
+    .dek p { margin: 0 0 0.85em; }
+    .dek p:last-child { margin-bottom: 0; }
     .dek.pending {
       color: var(--muted);
       font-style: italic;
@@ -490,14 +500,14 @@
     }
     .actions button.primary {
       background: var(--yellow);
-      color: var(--ink);
+      color: #171715;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       padding: 10px 18px;
     }
     .actions button.primary:hover {
-      background: var(--ink);
+      background: #171715;
       color: var(--yellow);
     }
     .actions a.btn {
@@ -523,7 +533,7 @@
       min-height: 200px;
       overflow: hidden;
       background: #111;
-      margin-bottom: 18px;
+      margin-bottom: 0;
       border: none;
       border-radius: var(--r-media);
     }
@@ -537,16 +547,22 @@
     }
     .detail p { margin: 0 0 0.9em; font-size: 0.95rem; color: var(--ink); line-height: 1.75; }
     .detail p:last-child { margin-bottom: 0; }
-    .detail ol.points {
+    .dek ol.points,
+    .detail ol.points,
+    .note-panel ol.points {
       margin: 0.2em 0 0.4em;
       padding: 0 0 0 1.35em;
       line-height: 1.75;
     }
-    .detail ol.points li {
+    .dek ol.points li,
+    .detail ol.points li,
+    .note-panel ol.points li {
       margin: 0 0 0.75em;
       padding: 0;
     }
-    .detail ol.points li:last-child { margin-bottom: 0; }
+    .dek ol.points li:last-child,
+    .detail ol.points li:last-child,
+    .note-panel ol.points li:last-child { margin-bottom: 0; }
     .detail .label {
       display: block;
       color: var(--muted);
@@ -562,6 +578,33 @@
     .detail .label.why,
     .detail .label.level { background: none; color: var(--muted); }
     .detail .label:first-of-type { margin-top: 0; }
+    .detail-notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .note-panel {
+      background: var(--expr-alt);
+      border-radius: 16px;
+      padding: 16px 18px 15px;
+    }
+    html.theme-night .note-panel {
+      background: #2C2923;
+      box-shadow: inset 0 0 0 1px #6E675C;
+    }
+    .note-panel .label {
+      margin: 0 0 8px;
+      color: var(--faint);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+    }
+    .note-panel > p,
+    .note-panel > ol {
+      margin: 0 0 0.75em;
+    }
+    .note-panel > :last-child { margin-bottom: 0; }
     .detail .pending {
       color: var(--muted);
       font-style: italic;
@@ -868,16 +911,10 @@
       return `<p>${escapeHtml(text)}</p>`;
     }
 
-    function summaryDek(item, thin) {
+    function summaryBlock(item, thin) {
       if (thin) return `<p class="dek pending">Summary still catching up — open the video meanwhile.</p>`;
-      const raw = String(item.summary || "").trim();
-      const listed = splitCircled(raw);
-      let dek = listed && listed.lead ? listed.lead : raw;
-      if (!listed) {
-        const parts = raw.split(/(?<=[。！？.!?])\s*/).filter(Boolean);
-        if (parts.length > 2) dek = parts.slice(0, 2).join("");
-      }
-      return `<p class="dek">${escapeHtml(dek)}</p>`;
+      const html = formatRich(item.summary);
+      return html ? `<div class="dek">${html}</div>` : "";
     }
 
     function readClosedDays() {
@@ -940,32 +977,29 @@
           card.dataset.id = item.id;
           const thin = item.summary_quality !== "full";
           const whyBlock = (!thin && item.why)
-            ? `<p class="label why">Why watch</p>${formatRich(item.why)}`
+            ? `<aside class="note-panel"><p class="label why">Why watch</p>${formatRich(item.why)}</aside>`
             : "";
           const diffBlock = (!thin && item.difficulty)
-            ? `<p class="label level">English level</p>${formatRich(item.difficulty)}`
+            ? `<aside class="note-panel"><p class="label level">English level</p>${formatRich(item.difficulty)}</aside>`
             : "";
-          const fullSummaryBlock = (!thin && item.summary)
-            ? formatRich(item.summary)
-            : (thin ? `<p class="pending">Summary still catching up — open the video meanwhile.</p>` : "");
+          const notes = (whyBlock || diffBlock) ? `<div class="detail-notes">${whyBlock}${diffBlock}</div>` : "";
+          const pendingChip = thin ? `<span class="quality-chip thin">Pending</span>` : "";
           card.innerHTML = `
             <div class="card-head">
               <span class="slot-chip ${shownSlot}" aria-label="${slotLabel[shownSlot] || shownSlot}">${slotLabel[shownSlot] || shownSlot}</span>
-              <span class="quality-chip ${thin ? "thin" : "full"}">${thin ? "Pending" : "Full"}</span>
+              ${pendingChip}
             </div>
             <h3><a href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3>
             <p class="meta">${escapeHtml(item.channel)} · ${escapeHtml(formatDuration(item.duration))}` +
               (item.published ? ` · ${escapeHtml(item.published)}` : "") + `</p>
-            ${summaryDek(item, thin)}
+            ${summaryBlock(item, thin)}
             <div class="actions">
               <button type="button" class="primary" data-act="toggle">Collapse</button>
               <a class="btn" href="${item.url}" target="_blank" rel="noopener">Open on YouTube ↗</a>
             </div>
             <div class="detail open" id="d-${item.id}">
               <div class="video" data-vid="${escapeHtml(item.id)}"></div>
-              ${fullSummaryBlock}
-              ${whyBlock}
-              ${diffBlock}
+              ${notes}
             </div>`;
           body.appendChild(card);
           mountEmbed(card.querySelector(".video"));
