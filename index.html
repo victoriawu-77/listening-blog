@@ -100,9 +100,7 @@
       gap: 2px 18px;
       margin: 0;
     }
-    .slot-nav button,
-    .date-toggle,
-    .date-reset {
+    .slot-nav button {
       appearance: none;
       display: inline-block;
       width: auto;
@@ -117,9 +115,7 @@
       padding: 4px 0 6px;
     }
     .slot-nav button { font-size: 1.2rem; padding: 8px 0 10px; }
-    .slot-nav button:hover,
-    .date-toggle:hover,
-    .date-reset:hover {
+    .slot-nav button:hover {
       background: transparent;
       color: var(--ink);
     }
@@ -158,17 +154,26 @@
       margin-left: auto;
       position: relative;
     }
-    .date-toggle { color: var(--muted); font-size: 1.15rem; font-weight: 500; padding: 8px 0 10px; }
+    .date-toggle {
+      appearance: none;
+      border: 1.5px solid #C9C1B0;
+      background: #fff;
+      color: var(--ink);
+      border-radius: var(--r-pill);
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.2;
+      cursor: pointer;
+      box-shadow: none;
+    }
+    .date-toggle:hover { border-color: var(--ink); background: #fff; }
     .date-control.is-set .date-toggle {
+      border-color: var(--yellow);
+      box-shadow: inset 0 0 0 1px var(--yellow);
       color: var(--ink);
       font-weight: 600;
-      box-shadow: inset 0 -2px 0 var(--yellow);
-    }
-    .date-reset {
-      font-size: 1.25rem;
-      line-height: 1;
-      padding: 0 2px 4px;
-      color: var(--faint);
     }
     .date-popover {
       position: absolute;
@@ -643,7 +648,6 @@
         </nav>
         <div class="date-control">
           <button type="button" class="date-toggle" id="date-toggle" aria-expanded="false" aria-controls="date-popover">Pick a date</button>
-          <button type="button" class="date-reset" id="date-reset" hidden aria-label="Any day">×</button>
           <div class="date-popover" id="date-popover" hidden>
             <div class="cal-head">
               <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">‹</button>
@@ -652,7 +656,7 @@
             </div>
             <div class="cal-week" aria-hidden="true"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
             <div class="cal-grid" id="cal-grid"></div>
-            <button type="button" class="cal-any" id="date-any">Any day</button>
+            <button type="button" class="cal-any" id="date-any">Clear</button>
           </div>
         </div>
       </div>
@@ -681,7 +685,6 @@
     const main = document.getElementById("main");
     const qInput = document.getElementById("q");
     const dateToggle = document.getElementById("date-toggle");
-    const dateReset = document.getElementById("date-reset");
     const datePopover = document.getElementById("date-popover");
     const calMonth = document.getElementById("cal-month");
     const calGrid = document.getElementById("cal-grid");
@@ -855,11 +858,9 @@
       const control = dateToggle.closest(".date-control");
       if (dayFilter === "all") {
         dateToggle.textContent = "Pick a date";
-        dateReset.hidden = true;
         control.classList.remove("is-set");
       } else {
         dateToggle.textContent = fmtDateShort(dayFilter);
-        dateReset.hidden = false;
         control.classList.add("is-set");
       }
     }
@@ -1063,10 +1064,6 @@
       closePopover();
       render();
     }
-    dateReset.addEventListener("click", (e) => {
-      e.stopPropagation();
-      resetDate();
-    });
     document.getElementById("date-any").addEventListener("click", (e) => {
       e.stopPropagation();
       resetDate();
