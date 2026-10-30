@@ -123,8 +123,7 @@
       background: transparent;
       color: var(--ink);
     }
-    .slot-nav button.active,
-    .slot-nav button[data-quality].active {
+    .slot-nav button.active {
       background: transparent;
       color: var(--ink);
       font-weight: 600;
@@ -553,7 +552,6 @@
           <button type="button" data-slot="day">Day</button>
           <button type="button" data-slot="night">Night</button>
           <button type="button" data-slot="extra">Extra</button>
-          <button type="button" data-quality="full">Full summaries</button>
         </nav>
         <div class="date-control">
           <button type="button" class="date-toggle" id="date-toggle">Pick a date</button>
@@ -590,7 +588,6 @@
     const dateInput = document.getElementById("date-input");
     const DAY_KEY = "victoria-listening-day-folds";
     let slot = "all";
-    let onlyFull = false;
     let dayFilter = "all";
     let query = "";
 
@@ -609,7 +606,6 @@
 
     function matchItem(item, day) {
       if (slot !== "all" && item.slot !== slot) return false;
-      if (onlyFull && item.summary_quality !== "full") return false;
       if (dayFilter !== "all" && day.date !== dayFilter) return false;
       if (query) {
         const hay = [item.title, item.channel, item.summary, item.why, item.difficulty, day.date].join(" ").toLowerCase();
@@ -882,11 +878,6 @@
         document.querySelectorAll(".slot-nav button[data-slot]").forEach(x => x.classList.toggle("active", x === b));
         render();
       });
-    });
-    document.querySelector(".slot-nav button[data-quality]").addEventListener("click", (e) => {
-      onlyFull = !onlyFull;
-      e.currentTarget.classList.toggle("active", onlyFull);
-      render();
     });
     qInput.addEventListener("input", () => {
       query = qInput.value.trim().toLowerCase();
