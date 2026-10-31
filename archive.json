@@ -1,8 +1,78 @@
 {
   "title": "Listening Log / 视听日志",
-  "updated": "2026-10-30",
+  "updated": "2026-10-31",
   "source": "Lenny daily English listening routine + conversation summaries",
   "days": [
+    {
+      "date": "2026-10-31",
+      "items": [
+        {
+          "id": "IStiszvY5h8",
+          "url": "https://www.youtube.com/watch?v=IStiszvY5h8",
+          "title": "James McDonald - Building Beautiful Websites with Claude",
+          "channel": "Dive Club",
+          "duration": "约 45 分钟",
+          "published": "2026-10-28",
+          "slot": "day",
+          "summary": "视觉设计师 James 边改 Access Grid 官网边演示：Figma 里定版式与视觉母题，再用 Claude + MCP 做动画、小工具和可点击原型；还讲了自己用 Claude 从零做 Mac 门铃 App Onlook。核心观点是 AI 编码是探索手段不是替代品味，Figma 仍适合定方向，到要「动起来、用起来」时再进 Claude；他爱给小工具加 random button，把 shelved 的旧动效想法复用到新区块。",
+          "why": "设计师从「交稿」到「自己把交互和动效跑通」的完整路径，和 Happycapy / agent-native 产品打法很贴。",
+          "difficulty": "美式口语、设计圈说法多，语速中等；屏幕分享多，跟画面听会轻松不少。",
+          "expressions": [],
+          "summary_quality": "full"
+        },
+        {
+          "id": "zHG6sAss_kE",
+          "url": "https://www.youtube.com/watch?v=zHG6sAss_kE",
+          "title": "Why Agents Love Supabase — with Paul Copplestone and Ant Wilson",
+          "channel": "Latent Space",
+          "duration": "约 77 分钟",
+          "published": "2026-10-28",
+          "slot": "day",
+          "summary": "Supabase 两位联合创始人聊为什么 frontier 模型写应用时几乎总推荐他们：本地起 backend 可不依赖 Docker、schema 用声明式文件放进 Git（像数据库的 Terraform）、把 compute 放到数据库旁边跑长任务。还谈到月开约五百万库、从原型到 petabyte、Turso 收购，以及 agent 代用户走完配置后 activation 反而变好。",
+          "why": "做 agent-native 产品时，后端要「人能读、agent 也能改」——直接对标你们的产品直觉。",
+          "difficulty": "工程向、口音偏多元；可先听前半小时的 Build/Operate 部分。",
+          "expressions": [],
+          "summary_quality": "full"
+        },
+        {
+          "id": "EGC7jht_mis",
+          "url": "https://www.youtube.com/watch?v=EGC7jht_mis",
+          "title": "What Anthropic's S-1 Tells Us About the A.I. Business | Hard Fork",
+          "channel": "Hard Fork",
+          "duration": "约 53 分钟",
+          "published": "2026-10-30",
+          "slot": "night",
+          "summary": "围绕 Anthropic 即将 IPO：S-1 里上半年约 $163 亿收入、真实经营亏损在收窄，但数据中心长约仍是刀锋；嘉宾讨论「泡沫还是繁荣」、90+ 页风险披露（含 catastrophic/existential risk、model welfare）、创始人多股权治理，以及 Claude Code 热潮后 Q3 增速放缓该怎么讲故事。后半还有 PHP 漏洞周、数据中心与中期选举、微软买断包等速览。",
+          "why": "快速摸清 AI 实验室商业化叙事与公开市场第一次「掀桌看账」——谈融资/叙事时很有用。",
+          "difficulty": "新闻播客语速偏快、梗多；Erin Griffith 等嘉宾信息密度高，有字幕更好。",
+          "expressions": [],
+          "summary_quality": "full"
+        }
+      ],
+      "expressions": [
+        {
+          "en": "late bloomer",
+          "zh": "起步偏晚的人（James 自称在 AI 工具上是 late bloomer）"
+        },
+        {
+          "en": "throwaway tool",
+          "zh": "为探索随手做的一次性小工具，用完可扔"
+        },
+        {
+          "en": "declarative schema",
+          "zh": "用「期望状态」描述数据库结构，而不是一路堆积 migrate"
+        },
+        {
+          "en": "pure play",
+          "zh": "业务几乎只押在某一赛道的公司（文中称 Anthropic 是首个纯 LLM pure play 上市）"
+        },
+        {
+          "en": "token maxing",
+          "zh": "盲目堆 token/算力用量当产出指标（后被指出是糟糕度量）"
+        }
+      ],
+      "day_assignment": "confirmed"
+    },
     {
       "date": "2026-10-30",
       "items": [
