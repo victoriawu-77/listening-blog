@@ -4,6 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Listening Log</title>
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Listening">
+  <meta name="theme-color" content="#F2F0E6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141311" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
@@ -89,21 +96,33 @@
     }
     .logo {
       display: inline-flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       flex: 0 0 auto;
-      gap: 3px;
+      gap: 0.3em;
       margin: 0 8px 0 0;
       padding: 0;
       background: transparent;
       color: var(--ink);
-    }
-    .logo-ll {
       font-family: var(--serif);
       font-weight: 600;
-      font-size: 3.5rem;
-      letter-spacing: -0.08em;
+      font-size: 1.85rem;
+      letter-spacing: -0.02em;
       line-height: 1;
+    }
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex: 0 0 auto;
+    }
+    .logo-mark.is-night { display: none; }
+    html.theme-night .logo-mark.is-day { display: none; }
+    html.theme-night .logo-mark.is-night { display: block; }
+    .logo-name {
+      font: inherit;
+      letter-spacing: inherit;
+      color: inherit;
     }
 
     .filter-row {
@@ -721,7 +740,8 @@
     @media (max-width: 800px) {
       .topbar-inner { padding: 26px 18px 16px; }
       .topbar-row { flex-wrap: nowrap; min-height: 88px; gap: 12px; }
-      .logo-ll { font-size: 2.85rem; }
+      .logo { font-size: 1.2rem; gap: 8px; }
+      .logo-mark { width: 48px; height: 48px; }
       .topbar input#q {
         margin-left: auto;
         flex: 0 1 148px;
@@ -749,7 +769,11 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="topbar-row">
-        <div class="logo" aria-label="Listening Log"><span class="logo-ll">LL</span></div>
+        <div class="logo">
+          <img class="logo-mark is-day" src="assets/logo/gramophone-symbol-light.svg" width="48" height="48" alt="">
+          <img class="logo-mark is-night" src="assets/logo/gramophone-symbol-night.svg" width="48" height="48" alt="">
+          <span class="logo-name">Listening Log</span>
+        </div>
         <input id="q" type="search" placeholder="Search…" autocomplete="off" />
       </div>
       <div class="filter-row">
@@ -1511,7 +1535,10 @@
       return hour >= 6 && hour < 18 ? "day" : "night";
     }
     function applyTheme() {
-      document.documentElement.classList.toggle("theme-night", slot === "night");
+      const night = slot === "night";
+      document.documentElement.classList.toggle("theme-night", night);
+      const color = night ? "#141311" : "#F2F0E6";
+      document.querySelectorAll('meta[name="theme-color"]').forEach(el => { el.content = color; });
     }
     const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
